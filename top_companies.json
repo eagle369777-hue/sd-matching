@@ -1,0 +1,588 @@
+{
+  "categories": [
+    {
+      "id": "cat_body",
+      "name": "机器人本体",
+      "name_en": "Robot Body",
+      "icon": "🤖",
+      "companies": [
+        {
+          "name": "优必选",
+          "name_en": "UBTECH",
+          "valuation": "约600亿",
+          "products": "Walker S系列人形机器人",
+          "highlight": "中国首个商业化双足真人尺寸人形机器人，全球进入最多车厂实训",
+          "founded": "2012",
+          "city": "深圳"
+        },
+        {
+          "name": "智元机器人",
+          "name_en": "Agibot",
+          "valuation": "约150亿",
+          "products": "灵犀X1/X2、远征A1/A2系列",
+          "highlight": "全栈开源人形机器人，情感计算+工业场景双线布局",
+          "founded": "2023",
+          "city": "上海"
+        },
+        {
+          "name": "宇树科技",
+          "name_en": "Unitree",
+          "valuation": "约120亿",
+          "products": "G1/H1人形机器人、Go2/B2四足机器人",
+          "highlight": "全球消费级四足机器人市占率第一，G1性价比标杆",
+          "founded": "2016",
+          "city": "杭州"
+        },
+        {
+          "name": "云深处",
+          "name_en": "DeepRobotics",
+          "valuation": "超100亿",
+          "products": "绝影X30/X20四足机器人",
+          "highlight": "工业级四足机器人领先者，巡检/救援场景深耕",
+          "founded": "2019",
+          "city": "杭州"
+        },
+        {
+          "name": "傅利叶智能",
+          "name_en": "Fourier Intelligence",
+          "valuation": "80亿",
+          "products": "GR-1通用人形机器人",
+          "highlight": "康复机器人起家，GR-1力控全身运动，已交付全球客户",
+          "founded": "2015",
+          "city": "上海"
+        },
+        {
+          "name": "银河通用",
+          "name_en": "Galbot",
+          "valuation": "约72亿",
+          "products": "Galbot G1通用机器人",
+          "highlight": "具身大模型+灵巧操作，斯坦福背景团队",
+          "founded": "2023",
+          "city": "北京"
+        },
+        {
+          "name": "擎朗智能",
+          "name_en": "Keenon",
+          "valuation": "约72亿",
+          "products": "配送/清洁/商用服务机器人",
+          "highlight": "全球商用服务机器人出货量领先，覆盖60+国家",
+          "founded": "2010",
+          "city": "上海"
+        },
+        {
+          "name": "星海图",
+          "name_en": "Starfield",
+          "valuation": "72亿",
+          "products": "通用具身智能机器人",
+          "highlight": "清华系团队，端到端大模型驱动的通用机器人",
+          "founded": "2023",
+          "city": "北京"
+        },
+        {
+          "name": "石机器人",
+          "name_en": "Robot石",
+          "valuation": "52.95亿",
+          "products": "人形机器人及核心零部件",
+          "highlight": "自主研发关节模组，性价比路线",
+          "founded": "2022",
+          "city": "深圳"
+        },
+        {
+          "name": "众擎机器人",
+          "name_en": "ZQ Robotics",
+          "valuation": "45亿",
+          "products": "T800/PM01/SE01系列",
+          "highlight": "T800人形机器人18万元起，SE01工业机器人170cm/55kg",
+          "founded": "2023",
+          "city": "深圳"
+        },
+        {
+          "name": "乐聚机器人",
+          "name_en": "AELOS/LEJU",
+          "valuation": "50-100亿",
+          "products": "夸父4.0/4Pro人形机器人",
+          "highlight": "夸父170cm/40+自由度，搭载华为盘古大模型",
+          "founded": "2016",
+          "city": "深圳"
+        },
+        {
+          "name": "逐际动力",
+          "name_en": "LimX Dynamics",
+          "valuation": "50-100亿",
+          "products": "CL-1/CL-2人形机器人、P1点式双足",
+          "highlight": "全地形运动能力，动态双足行走技术领先",
+          "founded": "2022",
+          "city": "深圳"
+        },
+        {
+          "name": "普渡科技",
+          "name_en": "Pudu Robotics",
+          "valuation": "50-100亿",
+          "products": "CT系列商用配送/清洁机器人",
+          "highlight": "全球60+国家部署，累计出货量行业领先",
+          "founded": "2016",
+          "city": "深圳"
+        },
+        {
+          "name": "星动纪元",
+          "name_en": "StarEra",
+          "valuation": "50-100亿",
+          "products": "星动L7人形机器人",
+          "highlight": "清华系，自研电驱关节，工业场景落地快",
+          "founded": "2023",
+          "city": "北京"
+        },
+        {
+          "name": "千寻智能",
+          "name_en": "QianXun",
+          "valuation": "20亿",
+          "products": "智能机器人控制系统",
+          "highlight": "机器人智能控制算法及调度系统",
+          "founded": "2020",
+          "city": "杭州"
+        },
+        {
+          "name": "斯坦德机器人",
+          "name_en": "Standard Robots",
+          "valuation": "10-50亿",
+          "products": "Oasis系列AMR/复合机器人",
+          "highlight": "工业AMR+协作机器人，柔性物流方案",
+          "founded": "2014",
+          "city": "深圳"
+        },
+        {
+          "name": "加速进化",
+          "name_en": "SpeedBot",
+          "valuation": "10-50亿",
+          "products": "Booster T1/K1人形机器人",
+          "highlight": "T1全球人形机器人竞速冠军，K1教育入门款",
+          "founded": "2023",
+          "city": "杭州"
+        },
+        {
+          "name": "帕西尼感知",
+          "name_en": "Pacini",
+          "valuation": "10-50亿",
+          "products": "触觉传感器/灵巧手",
+          "highlight": "多维触觉传感技术，机器人触觉感知核心供应商",
+          "founded": "2021",
+          "city": "深圳"
+        },
+        {
+          "name": "智平方",
+          "name_en": "AI²Robotics",
+          "valuation": "10-50亿",
+          "products": "通用机器人AI系统",
+          "highlight": "AI+机器人融合，具身大模型应用",
+          "founded": "2023",
+          "city": "深圳"
+        },
+        {
+          "name": "松延动力",
+          "name_en": "NOETIX",
+          "valuation": "10-50亿",
+          "products": "NOETIX N2/Dora/小布米",
+          "highlight": "N2仅3.99万起，小布米9998元，极致性价比路线",
+          "founded": "2024",
+          "city": "北京"
+        }
+      ]
+    },
+    {
+      "id": "cat_perception",
+      "name": "感知系统",
+      "name_en": "Perception System",
+      "icon": "👁️",
+      "companies": [
+        {
+          "name": "奥比中光",
+          "name_en": "Orbbec",
+          "valuation": "上市公司",
+          "products": "3D视觉传感器、结构光/ToF/dToF模组",
+          "highlight": "全球3D视觉感知龙头企业，覆盖机器人/手机/AIOT",
+          "founded": "2013",
+          "city": "深圳"
+        },
+        {
+          "name": "蓝点触控",
+          "name_en": "BlueDot",
+          "valuation": "未公开",
+          "products": "六维力/力矩传感器",
+          "highlight": "高精度六维力传感器，机器人力控核心部件",
+          "founded": "2015",
+          "city": "北京"
+        },
+        {
+          "name": "坤维科技",
+          "name_en": "Kunwei",
+          "valuation": "未公开",
+          "products": "六维力传感器系列",
+          "highlight": "国产六维力传感器先行者，机器人关节力控",
+          "founded": "2018",
+          "city": "深圳"
+        },
+        {
+          "name": "鑫精诚",
+          "name_en": "XJC Sensor",
+          "valuation": "未公开",
+          "products": "六维力/多维力传感器",
+          "highlight": "力传感器专家，覆盖工业/医疗/机器人领域",
+          "founded": "2012",
+          "city": "深圳"
+        },
+        {
+          "name": "柯力传感",
+          "name_en": "Keli Sensing",
+          "valuation": "上市公司",
+          "products": "六维力传感器、称重系统",
+          "highlight": "A股上市传感器企业，六维力产品线完备",
+          "founded": "1994",
+          "city": "宁波"
+        },
+        {
+          "name": "能斯达",
+          "name_en": "Nusdr",
+          "valuation": "未公开",
+          "products": "柔性触觉传感器",
+          "highlight": "柔性电子皮肤，机器人触觉感知前沿技术",
+          "founded": "2019",
+          "city": "南京"
+        },
+        {
+          "name": "福莱新材",
+          "name_en": "Flexcon",
+          "valuation": "上市公司",
+          "products": "柔性传感器薄膜",
+          "highlight": "柔性材料+传感融合，机器人皮肤方向",
+          "founded": "2005",
+          "city": "嘉兴"
+        },
+        {
+          "name": "华威科",
+          "name_en": "HWK Tech",
+          "valuation": "未公开",
+          "products": "柔性触觉/压力传感器",
+          "highlight": "电子皮肤及柔性传感解决方案",
+          "founded": "2016",
+          "city": "武汉"
+        },
+        {
+          "name": "他山科技",
+          "name_en": "TaShan Tech",
+          "valuation": "未公开",
+          "products": "触觉多维传感器阵列",
+          "highlight": "多维触觉感知芯片，机器人灵巧手核心配套",
+          "founded": "2020",
+          "city": "上海"
+        },
+        {
+          "name": "禾赛科技",
+          "name_en": "Hesai",
+          "valuation": "上市公司",
+          "products": "激光雷达AT128/XT32/Pandar系列",
+          "highlight": "全球车载激光雷达领先者，机器人心脏级感知",
+          "founded": "2015",
+          "city": "上海"
+        },
+        {
+          "name": "速腾聚创",
+          "name_en": "RoboSense",
+          "valuation": "上市公司",
+          "products": "M系列固态激光雷达",
+          "highlight": "MEMS固态激光雷达，量产交付能力领先",
+          "founded": "2014",
+          "city": "深圳"
+        }
+      ]
+    },
+    {
+      "id": "cat_actuation",
+      "name": "执行系统",
+      "name_en": "Actuation System",
+      "icon": "⚙️",
+      "companies": [
+        {
+          "name": "三花智控",
+          "name_en": "Sanhua",
+          "valuation": "上市公司(千亿)",
+          "products": "电子膨胀阀/机器人执行器",
+          "highlight": "跨界机器人执行器，热管理+关节模组双线布局",
+          "founded": "1994",
+          "city": "杭州"
+        },
+        {
+          "name": "拓普集团",
+          "name_en": "Tuopu",
+          "valuation": "上市公司(千亿)",
+          "products": "机器人直线/旋转执行器",
+          "highlight": "汽车Tier1切入机器人执行器，产能优势突出",
+          "founded": "2004",
+          "city": "宁波"
+        },
+        {
+          "name": "零差云控",
+          "name_en": "LingBot",
+          "valuation": "未公开",
+          "products": "关节模组一体化方案",
+          "highlight": "机器人关节模组高集成度方案商",
+          "founded": "2021",
+          "city": "北京"
+        },
+        {
+          "name": "因克斯智能",
+          "name_en": "INKS",
+          "valuation": "未公开",
+          "products": "一体化关节模组",
+          "highlight": "紧凑型关节模组，适配多形态机器人",
+          "founded": "2019",
+          "city": "深圳"
+        },
+        {
+          "name": "意优智控",
+          "name_en": "EYrobot",
+          "valuation": "未公开",
+          "products": "伺服驱动/关节控制器",
+          "highlight": "伺服驱动+控制一体化方案",
+          "founded": "2018",
+          "city": "上海"
+        },
+        {
+          "name": "灵足时代",
+          "name_en": "LingFoot",
+          "valuation": "未公开",
+          "products": "轻量型关节模组",
+          "highlight": "轻量化关节模组专家，适配协作/人形机器人",
+          "founded": "2020",
+          "city": "北京"
+        },
+        {
+          "name": "本末动力",
+          "name_en": "BenMo",
+          "valuation": "未公开",
+          "products": "直驱关节模组",
+          "highlight": "直驱技术路线关节模组，高力矩密度",
+          "founded": "2021",
+          "city": "深圳"
+        },
+        {
+          "name": "脉塔智能",
+          "name_en": "MetaIntelligence",
+          "valuation": "未公开",
+          "products": "智能关节模组系统",
+          "highlight": "集成传感器的一体化关节方案",
+          "founded": "2022",
+          "city": "苏州"
+        },
+        {
+          "name": "泉智博",
+          "name_en": "QZB",
+          "valuation": "未公开",
+          "products": "高性能伺服关节",
+          "highlight": "高功率密度伺服关节模组",
+          "founded": "2020",
+          "city": "杭州"
+        },
+        {
+          "name": "绿的谐波",
+          "name_en": "Leaderdrive",
+          "valuation": "上市公司(百亿)",
+          "products": "谐波减速器/机电一体化",
+          "highlight": "国产谐波减速器龙头，打破日本垄断",
+          "founded": "2011",
+          "city": "苏州"
+        },
+        {
+          "name": "来福谐波",
+          "name_en": "Laifualdrive",
+          "valuation": "未公开",
+          "products": "谐波减速器系列",
+          "highlight": "国产谐波减速器第二梯队领军",
+          "founded": "2016",
+          "city": "苏州"
+        },
+        {
+          "name": "同川科技",
+          "name_en": "Tongchuan",
+          "valuation": "未公开",
+          "products": "谐波减速器/精密减速机",
+          "highlight": "精密减速器新锐企业",
+          "founded": "2017",
+          "city": "重庆"
+        },
+        {
+          "name": "丰立智能",
+          "name_en": "Fengli Smart",
+          "valuation": "上市公司",
+          "products": "谐波减速器/精密齿轮",
+          "highlight": "精密传动领域深耕，谐波减速器量产",
+          "founded": "2006",
+          "city": "台州"
+        },
+        {
+          "name": "双环传动",
+          "name_en": "Shuanghuan Drive",
+          "valuation": "上市公司(百亿)",
+          "products": "RV减速器/精密齿轮",
+          "highlight": "国产RV减速器领军企业，重载场景主力",
+          "founded": "1985",
+          "city": "台州"
+        },
+        {
+          "name": "中大力德",
+          "name_en": "ZD Leader",
+          "valuation": "上市公司",
+          "products": "RV减速器/行星减速器",
+          "highlight": "多品类减速器布局，工业自动化核心供应商",
+          "founded": "2006",
+          "city": "宁波"
+        },
+        {
+          "name": "斯微特",
+          "name_en": "SWD",
+          "valuation": "未公开",
+          "products": "RV减速器/精密传动",
+          "highlight": "RV减速器国产替代先锋",
+          "founded": "2010",
+          "city": "苏州"
+        },
+        {
+          "name": "因时机器人",
+          "name_en": "INNFOS",
+          "valuation": "未公开",
+          "products": "SCA一体化关节/灵巧手",
+          "highlight": "伺服关节+灵巧手双线布局",
+          "founded": "2016",
+          "city": "北京"
+        },
+        {
+          "name": "灵巧智能",
+          "name_en": "Dexterous AI",
+          "valuation": "未公开",
+          "products": "灵巧手/触觉传感",
+          "highlight": "多指灵巧手技术领先",
+          "founded": "2022",
+          "city": "深圳"
+        },
+        {
+          "name": "傲意信息",
+          "name_en": "Aoyi",
+          "valuation": "未公开",
+          "products": "智能仿生手/灵巧手",
+          "highlight": "肌电控制灵巧手，医疗+工业双线",
+          "founded": "2015",
+          "city": "上海"
+        },
+        {
+          "name": "灵心巧手",
+          "name_en": "LingXin",
+          "valuation": "未公开",
+          "products": "高精度灵巧手",
+          "highlight": "高精度多自由度灵巧手，适配人形机器人",
+          "founded": "2023",
+          "city": "深圳"
+        },
+        {
+          "name": "强脑科技",
+          "name_en": "BrainCo",
+          "valuation": "独角兽",
+          "products": "脑机接口/智能仿生手",
+          "highlight": "哈佛系脑机接口企业，智能假肢全球领先",
+          "founded": "2015",
+          "city": "杭州"
+        },
+        {
+          "name": "戴盟机器人",
+          "name_en": "DAIMENG",
+          "valuation": "未公开",
+          "products": "力反馈灵巧手",
+          "highlight": "力反馈触觉灵巧操作",
+          "founded": "2022",
+          "city": "深圳"
+        },
+        {
+          "name": "钧舵机器人",
+          "name_en": "JunDuo",
+          "valuation": "未公开",
+          "products": "电动夹爪/灵巧手/末端执行器",
+          "highlight": "末端执行器全系列方案商",
+          "founded": "2020",
+          "city": "深圳"
+        }
+      ]
+    }
+  ],
+  "featured_products": [
+    {
+      "company": "宇树科技",
+      "product": "Unitree G1",
+      "price": "9.9万元起",
+      "specs": "站立高1270mm | 体重35kg | 23-43关节 | 膝扭矩120N·m | 速度2m/s",
+      "highlight": "支持模仿学习和强化学习，可完成舞蹈、武打、侧空翻等高难度动作，性价比标杆",
+      "category": "人形机器人",
+      "image_tag": "unitree_g1"
+    },
+    {
+      "company": "智元机器人",
+      "product": "灵犀X1 / 远征A2",
+      "price": "灵犀X1开源版可定制",
+      "specs": "灵犀X1: 133cm/33kg | 远征A2: 工业级全尺寸",
+      "highlight": "灵犀X1全栈开源，X2搭载情感计算；远征A2面向工业场景，G2支持工业交互",
+      "category": "人形机器人",
+      "image_tag": "agibot"
+    },
+    {
+      "company": "乐聚机器人",
+      "product": "夸父4.0/4Pro",
+      "price": "面议",
+      "specs": "身高170cm | 体重45-50kg | 40+自由度 | 关节扭矩300N·m | 步速5km/h",
+      "highlight": "搭载华为盘古大模型，国内首批支持大模型驱动的人形机器人",
+      "category": "人形机器人",
+      "image_tag": "leju"
+    },
+    {
+      "company": "加速进化",
+      "product": "Booster T1 / K1",
+      "price": "K1教育版优惠价",
+      "specs": "T1: 竞速冠军 | K1: 教育入门",
+      "highlight": "T1获全球人形机器人竞速冠军，K1面向教育市场，让机器人走进课堂",
+      "category": "人形机器人",
+      "image_tag": "speedbot"
+    },
+    {
+      "company": "松延动力",
+      "product": "NOETIX N2 / 小布米",
+      "price": "N2: 3.99万元起 | 小布米: 9998元预售",
+      "specs": "N2: 工业级 | 小布米: 消费级教育",
+      "highlight": "极致性价比路线，N2仅3.99万起，小布米9998元开启消费级机器人时代",
+      "category": "人形机器人",
+      "image_tag": "noetix"
+    },
+    {
+      "company": "优必选",
+      "product": "Walker S2",
+      "price": "商业定制",
+      "specs": "真人尺寸双足 | 多车厂实训 | 2025年11月量产",
+      "highlight": "中国首个商业化双足真人尺寸人形机器人，全球进入最多车厂实训，2025年Q4量产",
+      "category": "人形机器人",
+      "image_tag": "ubtech"
+    },
+    {
+      "company": "众擎机器人",
+      "product": "T800 / SE01",
+      "price": "T800: 18万元起 | SE01: 工业定制",
+      "specs": "T800: 1.73m/75kg/41关节 | SE01: 170cm/55kg工业级",
+      "highlight": "T800以18万元起售价打破人形机器人价格壁垒，SE01面向工业替代",
+      "category": "人形机器人",
+      "image_tag": "zq_robot"
+    },
+    {
+      "company": "傅利叶智能",
+      "product": "GR-1",
+      "price": "商业定制",
+      "specs": "165cm | 55kg | 44自由度 | 关节扭矩230N·m | 步速5km/h",
+      "highlight": "BEV+Transformer+OCC技术栈，康复+通用双线布局，已交付全球客户",
+      "category": "人形机器人",
+      "image_tag": "fourier"
+    }
+  ]
+}

@@ -2,126 +2,294 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>S&D 具身智能出海匹配</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#f5f7fa;color:#333;min-height:100vh;-webkit-tap-highlight-color:transparent}
-.header{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:28px 20px 24px;text-align:center;position:relative}
-.header h1{color:#fff;font-size:22px;font-weight:600;letter-spacing:1px}
-.header .sub{color:rgba(255,255,255,0.7);font-size:13px;margin-top:8px}
-.header .brand{display:inline-block;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:4px 14px;font-size:11px;color:rgba(255,255,255,0.8);margin-top:12px}
-.stats-bar{display:flex;justify-content:space-around;background:#fff;padding:16px 10px;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0a0e1a;color:#e0e0e0;min-height:100vh;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
+/* Header */
+.header{background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%);padding:24px 20px 20px;text-align:center;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:radial-gradient(circle at 30% 50%,rgba(120,80,255,0.08) 0%,transparent 50%);animation:headerGlow 8s ease-in-out infinite alternate}
+@keyframes headerGlow{0%{transform:translate(0,0)}100%{transform:translate(5%,3%)}}
+.header h1{color:#fff;font-size:20px;font-weight:700;letter-spacing:1px;position:relative}
+.header .sub{color:rgba(255,255,255,0.65);font-size:12px;margin-top:6px;position:relative}
+.header .brand{display:inline-block;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:3px 12px;font-size:10px;color:rgba(255,255,255,0.7);margin-top:10px;position:relative}
+/* Stats */
+.stats-bar{display:flex;justify-content:space-around;background:rgba(15,12,41,0.95);padding:14px 10px;border-bottom:1px solid rgba(255,255,255,0.06)}
 .stat-item{text-align:center}
-.stat-num{font-size:20px;font-weight:700;color:#0f3460}
-.stat-label{font-size:11px;color:#999;margin-top:2px}
+.stat-num{font-size:18px;font-weight:700;background:linear-gradient(135deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.stat-label{font-size:10px;color:#888;margin-top:2px}
+/* Tab Navigation */
+.tab-nav{display:flex;background:rgba(15,12,41,0.95);border-bottom:1px solid rgba(255,255,255,0.06);position:sticky;top:0;z-index:100;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.tab-item{flex:1;text-align:center;padding:12px 6px;font-size:12px;font-weight:500;color:#888;cursor:pointer;position:relative;transition:color .3s;user-select:none;-webkit-user-select:none;border:none;background:none;-webkit-appearance:none}
+.tab-item.active{color:#fff}
+.tab-item.active::after{content:'';position:absolute;bottom:0;left:20%;right:20%;height:2px;background:linear-gradient(90deg,#667eea,#764ba2);border-radius:1px}
+.tab-item .tab-icon{display:block;font-size:16px;margin-bottom:2px}
+/* Container */
 .container{max-width:480px;margin:0 auto;padding:16px}
-.search-box{background:#fff;border-radius:16px;padding:20px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06)}
-.search-box label{display:block;font-size:14px;font-weight:600;color:#333;margin-bottom:10px}
+/* Tab Content */
+.tab-content{display:none}
+.tab-content.active{display:block}
+/* Search Box */
+.search-box{background:rgba(30,28,50,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:18px;margin-bottom:14px}
+.search-box label{display:block;font-size:13px;font-weight:600;color:#ccc;margin-bottom:10px}
 .search-input-wrap{display:flex;gap:8px}
-.search-input{flex:1;border:2px solid #e8ecf1;border-radius:10px;padding:12px 14px;font-size:15px;outline:none;transition:border-color .2s;-webkit-appearance:none}
-.search-input:focus{border-color:#0f3460}
-.search-btn{background:linear-gradient(135deg,#0f3460,#1a5276);color:#fff;border:none;border-radius:10px;padding:12px 20px;font-size:15px;font-weight:600;cursor:pointer;white-space:nowrap;-webkit-appearance:none}
-.search-btn:active{opacity:.85}
-.mode-tabs{display:flex;gap:8px;margin-bottom:16px}
-.mode-tab{flex:1;text-align:center;padding:12px 10px;border-radius:10px;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;border:2px solid #e8ecf1;background:#fff;-webkit-appearance:none;user-select:none}
-.mode-tab.active{background:#0f3460;color:#fff;border-color:#0f3460}
-.hot-tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px}
-.hot-tag{background:#f0f4f8;border-radius:16px;padding:8px 14px;font-size:12px;color:#555;cursor:pointer;transition:all .2s;user-select:none;-webkit-appearance:none}
-.hot-tag:active{background:#0f3460;color:#fff}
+.search-input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 14px;font-size:14px;color:#fff;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.search-input::placeholder{color:#666}
+.search-input:focus{border-color:#667eea}
+.search-btn{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;-webkit-appearance:none;user-select:none}
+.search-btn:active{opacity:.85;transform:scale(.97)}
+/* Hot Tags */
+.hot-tags{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+.hot-tag{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:6px 12px;font-size:11px;color:#aaa;cursor:pointer;transition:all .2s;user-select:none;-webkit-user-select:none}
+.hot-tag:active{background:rgba(102,126,234,0.3);color:#fff;border-color:#667eea}
+/* Free Match Area */
+.free-textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px;font-size:14px;color:#fff;outline:none;min-height:80px;resize:vertical;-webkit-appearance:none;font-family:inherit}
+.free-textarea::placeholder{color:#555}
+.free-textarea:focus{border-color:#667eea}
+.match-hint{font-size:11px;color:#666;margin-top:6px;line-height:1.5}
+/* Dual Results */
+.dual-results{display:flex;gap:12px;margin-top:16px}
+.dual-col{flex:1;min-width:0}
+.dual-col-title{font-size:12px;font-weight:600;color:#667eea;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+/* Results */
 .results{margin-top:16px}
-.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
-.result-count{font-size:15px;font-weight:600;color:#0f3460}
-.result-tag{font-size:11px;background:#e8f5e9;color:#2e7d32;padding:3px 10px;border-radius:10px}
-.result-card{background:#fff;border-radius:14px;padding:18px;margin-bottom:12px;box-shadow:0 2px 8px rgba(0,0,0,0.05);border-left:4px solid #0f3460}
-.result-card .cname{font-size:16px;font-weight:700;color:#1a1a2e;margin-bottom:4px}
-.result-card .cloc{font-size:12px;color:#888;margin-bottom:10px}
-.result-card .irow{display:flex;align-items:flex-start;margin-bottom:6px;font-size:13px;line-height:1.6}
-.result-card .ilbl{color:#888;min-width:50px;flex-shrink:0}
-.result-card .ival{color:#444;flex:1}
-.result-card .mscore{display:inline-block;background:#fff3e0;color:#e65100;font-size:11px;padding:2px 8px;border-radius:8px;margin-top:8px}
-.cta-box{background:linear-gradient(135deg,#fff3e0,#fce4ec);border-radius:14px;padding:20px;margin-top:16px;text-align:center}
-.cta-box .cta-title{font-size:16px;font-weight:700;color:#c62828;margin-bottom:8px}
-.cta-box .cta-desc{font-size:13px;color:#555;line-height:1.6;margin-bottom:14px}
-.cta-btn{display:inline-block;background:linear-gradient(135deg,#c62828,#e53935);color:#fff;border:none;border-radius:24px;padding:14px 32px;font-size:16px;font-weight:600;cursor:pointer;width:100%;max-width:300px;-webkit-appearance:none}
+.result-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:6px}
+.result-count{font-size:14px;font-weight:600;color:#667eea}
+.result-tag{font-size:10px;background:rgba(102,126,234,0.15);color:#667eea;padding:3px 8px;border-radius:8px}
+.result-card{background:rgba(30,28,50,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:14px;margin-bottom:10px;border-left:3px solid #667eea}
+.result-card .cname{font-size:14px;font-weight:700;color:#fff;margin-bottom:4px}
+.result-card .cloc{font-size:11px;color:#888;margin-bottom:8px}
+.result-card .irow{display:flex;align-items:flex-start;margin-bottom:4px;font-size:12px;line-height:1.5}
+.result-card .ilbl{color:#666;min-width:42px;flex-shrink:0}
+.result-card .ival{color:#ccc;flex:1;word-break:break-all}
+.result-card .mscore{display:inline-block;background:rgba(102,126,234,0.12);color:#667eea;font-size:10px;padding:2px 8px;border-radius:6px;margin-top:6px}
+/* CTA */
+.cta-box{background:linear-gradient(135deg,rgba(102,126,234,0.1),rgba(118,75,162,0.1));border:1px solid rgba(102,126,234,0.2);border-radius:14px;padding:18px;margin-top:14px;text-align:center}
+.cta-box .cta-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
+.cta-box .cta-desc{font-size:12px;color:#aaa;line-height:1.6;margin-bottom:12px}
+.cta-btn{display:inline-block;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:20px;padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;width:100%;max-width:280px;-webkit-appearance:none}
 .cta-btn:active{opacity:.85}
-.cta-sec{display:block;margin-top:12px;font-size:13px;color:#666}
-.lead-form{display:none;background:#fff;border-radius:14px;padding:20px;margin-top:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08)}
-.lead-form.show{display:block}
-.lead-form h3{font-size:16px;margin-bottom:14px;color:#1a1a2e}
-.lead-input{width:100%;border:2px solid #e8ecf1;border-radius:10px;padding:12px 14px;font-size:14px;margin-bottom:10px;outline:none;-webkit-appearance:none}
-.lead-input:focus{border-color:#0f3460}
-.lead-submit{width:100%;background:linear-gradient(135deg,#0f3460,#1a5276);color:#fff;border:none;border-radius:10px;padding:14px;font-size:15px;font-weight:600;cursor:pointer;margin-top:6px;-webkit-appearance:none}
-.lead-submit:active{opacity:.85}
-.empty-state{text-align:center;padding:40px 20px;color:#999}
-.empty-state .icon{font-size:48px;margin-bottom:12px}
-.empty-state .msg{font-size:14px;line-height:1.6}
-.footer{text-align:center;padding:24px 16px;color:#bbb;font-size:11px;line-height:1.8}
+/* Scenario Cards */
+.scenario-scroll{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0 12px;scrollbar-width:none;-ms-overflow-style:none}
+.scenario-scroll::-webkit-scrollbar{display:none}
+.scenario-card{min-width:120px;background:rgba(30,28,50,0.8);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:16px 12px;text-align:center;cursor:pointer;transition:all .2s;flex-shrink:0;user-select:none;-webkit-user-select:none}
+.scenario-card:active,.scenario-card.active{border-color:#667eea;background:rgba(102,126,234,0.1);transform:scale(.97)}
+.scenario-card .sc-icon{font-size:32px;margin-bottom:8px}
+.scenario-card .sc-name{font-size:12px;font-weight:600;color:#fff}
+.scenario-card .sc-name-en{font-size:9px;color:#888;margin-top:2px}
+/* Scenario Detail */
+.scenario-detail{background:rgba(30,28,50,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;margin-top:16px;display:none}
+.scenario-detail.show{display:block}
+.sd-title{font-size:16px;font-weight:700;color:#fff;margin-bottom:6px}
+.sd-desc{font-size:12px;color:#aaa;line-height:1.6;margin-bottom:14px}
+.sd-section{margin-bottom:16px}
+.sd-section-title{font-size:13px;font-weight:600;color:#667eea;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.tech-tags{display:flex;flex-wrap:wrap;gap:6px}
+.tech-tag{background:rgba(102,126,234,0.1);border:1px solid rgba(102,126,234,0.2);border-radius:12px;padding:4px 10px;font-size:11px;color:#667eea}
+.equip-list{display:flex;flex-direction:column;gap:8px}
+.equip-item{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:10px 12px}
+.equip-item .eq-name{font-size:12px;font-weight:600;color:#ddd;margin-bottom:2px}
+.equip-item .eq-desc{font-size:11px;color:#888;line-height:1.4}
+.company-chips{display:flex;flex-wrap:wrap;gap:6px}
+.company-chip{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:5px 12px;font-size:11px;color:#ccc;cursor:pointer;transition:all .2s}
+.company-chip:active{background:rgba(102,126,234,0.2);color:#fff}
+.case-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px;margin-bottom:8px}
+.case-card .case-title{font-size:12px;font-weight:600;color:#ddd;margin-bottom:4px}
+.case-card .case-desc{font-size:11px;color:#888;line-height:1.5}
+/* Top Companies Section */
+.top-section{margin-top:20px}
+.top-section-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.top-cat-tabs{display:flex;gap:6px;margin-bottom:14px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.top-cat-tab{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:8px 14px;font-size:11px;color:#aaa;cursor:pointer;white-space:nowrap;transition:all .2s;user-select:none}
+.top-cat-tab.active{background:rgba(102,126,234,0.2);color:#fff;border-color:#667eea}
+.top-company-list{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.top-company-card{background:rgba(30,28,50,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:12px}
+.tc-name{font-size:13px;font-weight:700;color:#fff}
+.tc-val{font-size:10px;color:#667eea;margin-top:2px}
+.tc-product{font-size:11px;color:#aaa;margin-top:4px;line-height:1.4}
+.tc-highlight{font-size:10px;color:#888;margin-top:4px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* Featured Products */
+.featured-scroll{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:4px 0 12px;margin-top:14px}
+.featured-card{min-width:240px;background:rgba(30,28,50,0.8);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;flex-shrink:0}
+.fc-company{font-size:11px;color:#667eea;font-weight:600}
+.fc-product{font-size:14px;font-weight:700;color:#fff;margin-top:2px}
+.fc-price{display:inline-block;background:rgba(255,152,0,0.15);color:#ff9800;font-size:10px;padding:2px 8px;border-radius:6px;margin-top:6px}
+.fc-specs{font-size:10px;color:#888;margin-top:6px;line-height:1.5}
+.fc-highlight{font-size:11px;color:#aaa;margin-top:6px;line-height:1.4}
+/* Loading */
 .loading{display:none;text-align:center;padding:30px}
 .loading.show{display:block}
-.spinner{display:inline-block;width:32px;height:32px;border:3px solid #e8ecf1;border-top-color:#0f3460;border-radius:50%;animation:spin .8s linear infinite}
+.spinner{display:inline-block;width:28px;height:28px;border:2px solid rgba(255,255,255,0.1);border-top-color:#667eea;border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading .ltext{font-size:13px;color:#999;margin-top:10px}
-.loading-mask{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(255,255,255,0.5);z-index:999;justify-content:center;align-items:center}
-.loading-mask.show{display:flex}
+.loading .ltext{font-size:12px;color:#888;margin-top:8px}
+/* Lead Form */
+.lead-form{display:none;background:rgba(30,28,50,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:18px;margin-top:14px}
+.lead-form.show{display:block}
+.lead-form h3{font-size:14px;margin-bottom:12px;color:#fff}
+.lead-input{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 14px;font-size:13px;color:#fff;margin-bottom:8px;outline:none;-webkit-appearance:none}
+.lead-input::placeholder{color:#555}
+.lead-input:focus{border-color:#667eea}
+.lead-submit{width:100%;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;padding:14px;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;-webkit-appearance:none}
+.lead-submit:active{opacity:.85}
+/* Empty State */
+.empty-state{text-align:center;padding:30px 16px;color:#666}
+.empty-state .icon{font-size:40px;margin-bottom:10px}
+.empty-state .msg{font-size:13px;line-height:1.6}
+/* Footer */
+.footer{text-align:center;padding:24px 16px;color:#555;font-size:10px;line-height:1.8;border-top:1px solid rgba(255,255,255,0.04)}
+/* Scenario Action Button */
+.scenario-action-btn{display:block;width:100%;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;margin-top:14px;-webkit-appearance:none}
+/* Data Load Error */
+.load-error{background:rgba(255,59,48,0.1);border:1px solid rgba(255,59,48,0.2);border-radius:10px;padding:14px;margin:16px 0;text-align:center;color:#ff6b6b;font-size:12px}
 </style>
 </head>
 <body>
+
 <div class="header">
-<h1>S&D 智能匹配引擎</h1>
-<div class="sub">具身智能 · 跨境供需撮合平台</div>
-<div class="brand">友吉智汇 S&D Indonesia</div>
+  <h1>S&D 印尼出海首席大管家</h1>
+  <div class="sub">具身智能双向供需匹配平台</div>
+  <div class="brand">友吉智汇 · Embodied AI Sourcing</div>
 </div>
+
 <div class="stats-bar">
-<div class="stat-item"><div class="stat-num">8,973</div><div class="stat-label">印尼企业</div></div>
-<div class="stat-item"><div class="stat-num">492</div><div class="stat-label">国内供应商</div></div>
-<div class="stat-item"><div class="stat-num">88</div><div class="stat-label">HS编码覆盖</div></div>
+  <div class="stat-item"><div class="stat-num" id="statIndo">--</div><div class="stat-label">印尼企业</div></div>
+  <div class="stat-item"><div class="stat-num" id="statCn">--</div><div class="stat-label">国内供应商</div></div>
+  <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">应用场景</div></div>
+  <div class="stat-item"><div class="stat-num" id="statTop">--</div><div class="stat-label">头部企业</div></div>
 </div>
+
+<div class="tab-nav" id="tabNav">
+  <div class="tab-item active" data-tab="supplier"><span class="tab-icon">🇨🇳</span>找国内供应商</div>
+  <div class="tab-item" data-tab="buyer"><span class="tab-icon">🇮🇩</span>找印尼买家</div>
+  <div class="tab-item" data-tab="free"><span class="tab-icon">🔄</span>自由匹配</div>
+  <div class="tab-item" data-tab="scenario"><span class="tab-icon">🎯</span>场景搜索</div>
+</div>
+
 <div class="container">
-<div class="search-box">
-<label>🔍 输入您的产品或需求</label>
-<div class="search-input-wrap">
-<input class="search-input" id="qi" type="text" placeholder="如：3D视觉传感器、焊接机器人…" />
-<button class="search-btn" id="searchBtn">匹配</button>
+
+  <!-- Tab 1: 找国内供应商 -->
+  <div class="tab-content active" id="tab-supplier">
+    <div class="search-box">
+      <label>🔍 输入产品或需求，匹配国内供应商</label>
+      <div class="search-input-wrap">
+        <input class="search-input" id="supplierInput" type="text" placeholder="如：3D视觉传感器、协作机器人…" />
+        <button class="search-btn" id="supplierBtn">匹配</button>
+      </div>
+      <div class="hot-tags" id="supplierTags">
+        <span class="hot-tag" data-q="3D视觉传感器">3D视觉传感器</span>
+        <span class="hot-tag" data-q="焊接机器人">焊接机器人</span>
+        <span class="hot-tag" data-q="协作机器人">协作机器人</span>
+        <span class="hot-tag" data-q="AGV物流">AGV物流</span>
+        <span class="hot-tag" data-q="激光切割">激光切割</span>
+        <span class="hot-tag" data-q="半导体">半导体</span>
+        <span class="hot-tag" data-q="新能源">新能源</span>
+        <span class="hot-tag" data-q="汽车零部件">汽车零部件</span>
+      </div>
+    </div>
+    <div id="supplierLoading" class="loading"><div class="spinner"></div><div class="ltext">正在检索匹配中…</div></div>
+    <div id="supplierResults" class="results"></div>
+    <div id="supplierCta" class="cta-box" style="display:none"></div>
+    <div id="supplierLead" class="lead-form">
+      <h3>📝 留下联系方式，获取完整匹配报告</h3>
+      <input class="lead-input" id="sl_co" type="text" placeholder="公司名称 *"/>
+      <input class="lead-input" id="sl_na" type="text" placeholder="您的姓名 *"/>
+      <input class="lead-input" id="sl_ph" type="tel" placeholder="手机号码 / WhatsApp *"/>
+      <input class="lead-input" id="sl_em" type="email" placeholder="邮箱（选填）"/>
+      <button class="lead-submit" id="sl_submit">提交，获取完整报告</button>
+    </div>
+  </div>
+
+  <!-- Tab 2: 找印尼买家 -->
+  <div class="tab-content" id="tab-buyer">
+    <div class="search-box">
+      <label>🔍 输入产品或需求，匹配印尼买家</label>
+      <div class="search-input-wrap">
+        <input class="search-input" id="buyerInput" type="text" placeholder="e.g. welding robot, food packaging…" />
+        <button class="search-btn" id="buyerBtn">匹配</button>
+      </div>
+      <div class="hot-tags" id="buyerTags">
+        <span class="hot-tag" data-q="welding robot">welding robot</span>
+        <span class="hot-tag" data-q="food processing">food processing</span>
+        <span class="hot-tag" data-q="mining equipment">mining equipment</span>
+        <span class="hot-tag" data-q="textile machine">textile machine</span>
+        <span class="hot-tag" data-q="packaging">packaging</span>
+        <span class="hot-tag" data-q="solar panel">solar panel</span>
+        <span class="hot-tag" data-q="auto parts">auto parts</span>
+        <span class="hot-tag" data-q="electronics">electronics</span>
+      </div>
+    </div>
+    <div id="buyerLoading" class="loading"><div class="spinner"></div><div class="ltext">正在检索匹配中…</div></div>
+    <div id="buyerResults" class="results"></div>
+    <div id="buyerCta" class="cta-box" style="display:none"></div>
+  </div>
+
+  <!-- Tab 3: 自由匹配 -->
+  <div class="tab-content" id="tab-free">
+    <div class="search-box">
+      <label>🔄 自由匹配 — 同时搜索国内供应商 + 印尼买家</label>
+      <textarea class="free-textarea" id="freeInput" placeholder="输入任何需求描述，如：&#10;• 我需要找能做焊接的机器人公司&#10;• I need warehouse robots for cold chain&#10;• 想了解东南亚食品加工设备市场"></textarea>
+      <div class="match-hint">💡 支持中英文混合输入，系统将同时匹配国内供应商和印尼买家</div>
+      <div style="margin-top:10px">
+        <button class="search-btn" id="freeBtn" style="width:100%">🔍 双向匹配</button>
+      </div>
+      <div class="hot-tags" style="margin-top:10px">
+        <span class="hot-tag" data-fq="人形机器人 制造工厂">人形机器人 制造工厂</span>
+        <span class="hot-tag" data-fq="仓储物流自动化 warehouse automation">仓储物流自动化</span>
+        <span class="hot-tag" data-fq="food packaging machine 食品包装">食品包装设备</span>
+        <span class="hot-tag" data-fq="传感器 矿业 mining sensor">传感器矿业</span>
+      </div>
+    </div>
+    <div id="freeLoading" class="loading"><div class="spinner"></div><div class="ltext">双向检索匹配中…</div></div>
+    <div id="freeResults" class="dual-results">
+      <div class="dual-col">
+        <div class="dual-col-title">🇨🇳 国内供应商</div>
+        <div id="freeCnResults"></div>
+      </div>
+      <div class="dual-col">
+        <div class="dual-col-title">🇮🇩 印尼买家</div>
+        <div id="freeIndoResults"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 4: 场景搜索 -->
+  <div class="tab-content" id="tab-scenario">
+    <div class="search-box" style="padding-bottom:8px">
+      <label>🎯 场景搜索 — 选择应用行业，获取解决方案</label>
+      <div class="scenario-scroll" id="scenarioScroll"></div>
+    </div>
+    <div class="scenario-detail" id="scenarioDetail"></div>
+
+    <div class="top-section" id="topSection">
+      <div class="top-section-title">🏆 具身智能头部企业</div>
+      <div class="top-cat-tabs" id="topCatTabs"></div>
+      <div class="top-company-list" id="topCompanyList"></div>
+
+      <div style="margin-top:18px">
+        <div class="top-section-title">⭐ 核心产品速览</div>
+        <div class="featured-scroll" id="featuredScroll"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
-<div class="hot-tags" id="hotTags">
-<span class="hot-tag" data-q="3D视觉传感器">3D视觉传感器</span>
-<span class="hot-tag" data-q="焊接机器人">焊接机器人</span>
-<span class="hot-tag" data-q="协作机器人">协作机器人</span>
-<span class="hot-tag" data-q="AGV物流">AGV物流</span>
-<span class="hot-tag" data-q="激光切割">激光切割</span>
-<span class="hot-tag" data-q="半导体">半导体</span>
-<span class="hot-tag" data-q="新能源">新能源</span>
-<span class="hot-tag" data-q="汽车零部件">汽车零部件</span>
+
+<div class="footer">
+  友吉智汇 · S&D印尼出海匹配体系<br/>
+  专注中国-印尼具身智能跨境撮合<br/>
+  数据仅供参考 · 具体以实际对接为准
 </div>
-</div>
-<div class="mode-tabs">
-<div class="mode-tab active" id="tI" data-mode="indo">🇮🇩 找印尼买家</div>
-<div class="mode-tab" id="tC" data-mode="cn">🇨🇳 找国内供应商</div>
-</div>
-<div id="ld" class="loading"><div class="spinner"></div><div class="ltext">正在检索匹配中…</div></div>
-<div id="res" class="results"></div>
-<div id="cta" class="cta-box" style="display:none"></div>
-<div id="lf" class="lead-form">
-<h3>📝 留下联系方式，获取完整匹配报告</h3>
-<input class="lead-input" id="lc" type="text" placeholder="公司名称 *"/>
-<input class="lead-input" id="ln" type="text" placeholder="您的姓名 *"/>
-<input class="lead-input" id="lp" type="tel" placeholder="手机号码 / WhatsApp *"/>
-<input class="lead-input" id="le" type="email" placeholder="邮箱（选填）"/>
-<button class="lead-submit" id="submitBtn">提交，获取完整报告</button>
-</div>
-</div>
-<div class="footer">S&D Embodied AI Sourcing · 友吉智汇<br/>专注中国-印尼具身智能跨境撮合</div>
 
 <script>
 (function() {
   'use strict';
 
-  var INDO_DATA = [];
-  var CN_DATA = [];
-  var dataLoaded = false;
+  /* ========== State ========== */
+  var INDO_DATA = [], CN_DATA = [], TOP_DATA = null, SCENARIOS = null;
+  var dataReady = false;
 
-  // Bilingual dictionary
+  /* ========== Bilingual Dictionary ========== */
   var BD = {
     '焊接': ['welding','weld','solder'],
     'welding': ['焊接','焊'],
@@ -200,8 +368,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     'metal processing': ['金属加工','金属制造'],
     '医疗器械': ['medical device','medical equipment'],
     'medical device': ['医疗器械','医疗设备'],
-    '安全设备': ['safety equipment','protective equipment'],
-    'safety equipment': ['安全设备','防护设备'],
     '橡胶': ['rubber','elastomer'],
     'rubber': ['橡胶','弹性体'],
     '塑料': ['plastic','polymer','resin'],
@@ -227,18 +393,37 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     'grinding': ['打磨','抛光','磨削'],
     '切割': ['cutting','cut'],
     'cutting': ['切割','裁切'],
-    '缝纫': ['sewing','stitching'],
-    'sewing': ['缝纫','缝制'],
     '清洁': ['cleaning','clean'],
-    'cleaning': ['清洁','清洗']
+    'cleaning': ['清洁','清洗'],
+    '康复': ['rehabilitation','rehab','therapy'],
+    'rehabilitation': ['康复','恢复'],
+    '外骨骼': ['exoskeleton','wearable robot'],
+    'exoskeleton': ['外骨骼','穿戴机器人'],
+    '灵巧手': ['dexterous hand','robot hand','robotic gripper'],
+    'dexterous hand': ['灵巧手','机器人手'],
+    '力传感器': ['force sensor','force torque sensor'],
+    'force sensor': ['力传感器','力矩传感器'],
+    '激光雷达': ['lidar','laser radar'],
+    'lidar': ['激光雷达','激光雷达传感器'],
+    '手术机器人': ['surgical robot','surgery robot'],
+    'surgical robot': ['手术机器人'],
+    '教育机器人': ['education robot','teaching robot'],
+    'education robot': ['教育机器人','教学机器人'],
+    '配送机器人': ['delivery robot','service robot'],
+    'delivery robot': ['配送机器人','服务机器人']
   };
 
-  var currentMode = 'indo';
+  /* ========== Utility Functions ========== */
+  function escapeHtml(s) {
+    if (!s) return '';
+    var d = document.createElement('div');
+    d.appendChild(document.createTextNode(s));
+    return d.innerHTML;
+  }
 
   function expandKeywords(input) {
     var lo = input.toLowerCase();
-    var cnKw = {};
-    var enKw = {};
+    var cnKw = {}, enKw = {};
     var hasCjk = /[\u4e00-\u9fff]/;
 
     for (var t in BD) {
@@ -252,16 +437,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
         }
       }
     }
-
     var cnArr = Object.keys(cnKw);
     var enArr = Object.keys(enKw);
-
     if (cnArr.length === 0 && enArr.length === 0) {
       if (hasCjk.test(input)) { cnArr.push(lo); }
       else { enArr.push(lo); }
     }
-
     return { cn: cnArr, en: enArr };
+  }
+
+  /* ========== Matching Functions ========== */
+  function matchCn(keywordsCn) {
+    var results = [];
+    var kl = keywordsCn.map(function(k) { return k.toLowerCase(); });
+    for (var i = 0; i < CN_DATA.length; i++) {
+      var c = CN_DATA[i];
+      var tx = (c.t || '').toLowerCase();
+      var sc = 0;
+      for (var j = 0; j < kl.length; j++) {
+        if (tx.indexOf(kl[j]) >= 0) sc++;
+      }
+      if (sc >= 1) results.push({ n:c.n, p:c.p, c:c.c, cf:c.cf, l:c.l, r:c.r, pi:c.pi, score:sc });
+    }
+    results.sort(function(a,b) { return b.score - a.score; });
+    return results;
   }
 
   function matchIndo(keywordsEn) {
@@ -269,219 +468,430 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     var kl = keywordsEn.map(function(k) { return k.toLowerCase(); });
     for (var i = 0; i < INDO_DATA.length; i++) {
       var c = INDO_DATA[i];
-      var tx = c.t || '';
+      var tx = (c.t || '').toLowerCase();
       var sc = 0;
       for (var j = 0; j < kl.length; j++) {
         if (tx.indexOf(kl[j]) >= 0) sc++;
       }
-      if (sc >= 1) results.push({ n: c.n, c: c.c, s: c.s, r: c.r, i: c.i, d: c.d, h: c.h, score: sc });
+      if (sc >= 1) results.push({ n:c.n, c:c.c, s:c.s, r:c.r, i:c.i, d:c.d, h:c.h, score:sc });
     }
-    results.sort(function(a, b) { return b.score - a.score; });
+    results.sort(function(a,b) { return b.score - a.score; });
     return results;
   }
 
-  function matchCn(keywordsCn) {
-    var results = [];
-    var kl = keywordsCn.map(function(k) { return k.toLowerCase(); });
-    for (var i = 0; i < CN_DATA.length; i++) {
-      var c = CN_DATA[i];
-      var tx = c.t || '';
-      var sc = 0;
-      for (var j = 0; j < kl.length; j++) {
-        if (tx.indexOf(kl[j]) >= 0) sc++;
-      }
-      if (sc >= 1) results.push({ n: c.n, p: c.p, c: c.c, cf: c.cf, l: c.l, r: c.r, pi: c.pi, score: sc });
-    }
-    results.sort(function(a, b) { return b.score - a.score; });
-    return results;
-  }
-
-  function renderResults(results, mode) {
+  /* ========== Render Functions ========== */
+  function renderCnCards(results, max) {
+    if (results.length === 0) return '<div class="empty-state"><div class="icon">🔍</div><div class="msg">暂无匹配</div></div>';
+    var show = results.slice(0, max || 2);
     var html = '';
-    if (results.length === 0) {
-      html = '<div class="empty-state"><div class="icon">🔍</div><div class="msg">暂未找到匹配结果<br/>请尝试其他关键词或联系我们的专家</div></div>';
-      return { html: html, total: 0 };
+    for (var i = 0; i < show.length; i++) {
+      var c = show[i];
+      html += '<div class="result-card">';
+      html += '<div class="cname">' + escapeHtml(c.n) + '</div>';
+      html += '<div class="cloc">📍 ' + escapeHtml(c.p) + ' ' + escapeHtml(c.c) + '</div>';
+      html += '<div class="irow"><span class="ilbl">置信度</span><span class="ival">' + escapeHtml(c.cf) + '</span></div>';
+      if (c.l) html += '<div class="irow"><span class="ilbl">分类</span><span class="ival">' + escapeHtml(c.l) + '</span></div>';
+      if (c.r) html += '<div class="irow"><span class="ilbl">资本</span><span class="ival">' + escapeHtml(c.r) + '</span></div>';
+      if (c.pi && c.pi !== '待核实（见官网）' && c.pi !== 'null') {
+        html += '<div class="irow"><span class="ilbl">产品</span><span class="ival">' + escapeHtml(c.pi.substring(0,80)) + '</span></div>';
+      }
+      html += '<span class="mscore">匹配度: ' + c.score + ' 命中</span>';
+      html += '</div>';
     }
-
-    if (mode === 'indo') {
-      html += '<div class="result-header"><span class="result-count">找到 ' + results.length + ' 家匹配企业</span><span class="result-tag">实时匹配</span></div>';
-      var show = results.slice(0, 2);
-      for (var i = 0; i < show.length; i++) {
-        var c = show[i];
-        html += '<div class="result-card">';
-        html += '<div class="cname">' + escapeHtml(c.n) + '</div>';
-        html += '<div class="cloc">📍 ' + escapeHtml(c.c) + '</div>';
-        if (c.s) html += '<div class="irow"><span class="ilbl">规模</span><span class="ival">' + escapeHtml(c.s) + '</span></div>';
-        if (c.r) html += '<div class="irow"><span class="ilbl">营收</span><span class="ival">' + escapeHtml(c.r) + '</span></div>';
-        if (c.i) html += '<div class="irow"><span class="ilbl">行业</span><span class="ival">' + escapeHtml(c.i) + '</span></div>';
-        if (c.d) html += '<div class="irow"><span class="ilbl">业务</span><span class="ival">' + escapeHtml(c.d.substring(0, 120)) + '…</span></div>';
-        html += '<div class="irow"><span class="ilbl">HS编码</span><span class="ival">关联 ' + c.h + ' 个品类</span></div>';
-        html += '<span class="mscore">匹配度: ' + c.score + ' 个关键词命中</span>';
-        html += '</div>';
-      }
-      if (results.length > 2) {
-        html += '<div style="text-align:center;color:#999;font-size:13px;padding:8px 0">还有 ' + (results.length - 2) + ' 家企业待解锁…</div>';
-      }
-    } else {
-      var hc = 0;
-      for (var k = 0; k < results.length; k++) {
-        if (results[k].cf === '高' || results[k].cf === '中') hc++;
-      }
-      html += '<div class="result-header"><span class="result-count">找到 ' + results.length + ' 家匹配供应商</span><span class="result-tag">' + hc + ' 家中高置信度</span></div>';
-      var show2 = results.slice(0, 2);
-      for (var i2 = 0; i2 < show2.length; i2++) {
-        var c2 = show2[i2];
-        html += '<div class="result-card">';
-        html += '<div class="cname">' + escapeHtml(c2.n) + '</div>';
-        html += '<div class="cloc">📍 ' + escapeHtml(c2.p) + ' ' + escapeHtml(c2.c) + '</div>';
-        html += '<div class="irow"><span class="ilbl">置信度</span><span class="ival">' + escapeHtml(c2.cf) + '</span></div>';
-        if (c2.l) html += '<div class="irow"><span class="ilbl">分类</span><span class="ival">' + escapeHtml(c2.l) + '</span></div>';
-        if (c2.r) html += '<div class="irow"><span class="ilbl">注册资本</span><span class="ival">' + escapeHtml(c2.r) + '</span></div>';
-        if (c2.pi && c2.pi !== '待核实（见官网）' && c2.pi !== 'null') {
-          html += '<div class="irow"><span class="ilbl">产品</span><span class="ival">' + escapeHtml(c2.pi) + '</span></div>';
-        }
-        html += '<span class="mscore">匹配度: ' + c2.score + ' 个关键词命中</span>';
-        html += '</div>';
-      }
-      if (results.length > 2) {
-        html += '<div style="text-align:center;color:#999;font-size:13px;padding:8px 0">还有 ' + (results.length - 2) + ' 家供应商待解锁…</div>';
-      }
-    }
-
-    return { html: html, total: results.length };
-  }
-
-  function renderCta(total, mode) {
-    var html = '';
-    if (mode === 'indo') {
-      html = '<div class="cta-title">⚠️ 解锁全部 ' + total + ' 家精准买家</div>' +
-        '<div class="cta-desc">获取完整联系方式、历史采购数据及HS编码关税分析<br/>抢占印尼市场先机</div>' +
-        '<button class="cta-btn" id="ctaBtn">立即获取【¥3,000出海破冰包】</button>' +
-        '<span class="cta-sec">或回复【公司名+联系电话】，专家光速对接</span>';
-    } else {
-      html = '<div class="cta-title">💡 获取完整供应商名录 + 一体化方案</div>' +
-        '<div class="cta-desc">解锁 ' + total + ' 家供应商完整产品目录、工厂报价<br/>我们提供定制一体化解决方案，降低30%成本</div>' +
-        '<button class="cta-btn" id="ctaBtn">留下联系方式，24h内获取方案</button>';
+    if (results.length > (max || 2)) {
+      html += '<div style="text-align:center;color:#666;font-size:11px;padding:6px 0">还有 ' + (results.length - (max||2)) + ' 家待解锁…</div>';
     }
     return html;
   }
 
-  function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  function renderIndoCards(results, max) {
+    if (results.length === 0) return '<div class="empty-state"><div class="icon">🔍</div><div class="msg">No matches found</div></div>';
+    var show = results.slice(0, max || 2);
+    var html = '';
+    for (var i = 0; i < show.length; i++) {
+      var c = show[i];
+      html += '<div class="result-card">';
+      html += '<div class="cname">' + escapeHtml(c.n) + '</div>';
+      html += '<div class="cloc">📍 ' + escapeHtml(c.c) + '</div>';
+      if (c.s) html += '<div class="irow"><span class="ilbl">规模</span><span class="ival">' + escapeHtml(c.s) + '</span></div>';
+      if (c.r) html += '<div class="irow"><span class="ilbl">营收</span><span class="ival">' + escapeHtml(c.r) + '</span></div>';
+      if (c.i) html += '<div class="irow"><span class="ilbl">行业</span><span class="ival">' + escapeHtml(c.i) + '</span></div>';
+      if (c.d) html += '<div class="irow"><span class="ilbl">业务</span><span class="ival">' + escapeHtml(c.d.substring(0,100)) + '</span></div>';
+      html += '<span class="mscore">Match: ' + c.score + ' hits</span>';
+      html += '</div>';
+    }
+    if (results.length > (max || 2)) {
+      html += '<div style="text-align:center;color:#666;font-size:11px;padding:6px 0">' + (results.length - (max||2)) + ' more to unlock…</div>';
+    }
+    return html;
   }
 
-  function doSearch() {
-    var q = document.getElementById('qi').value.trim();
-    if (!q) { alert('请输入产品或需求关键词'); return; }
-    if (!dataLoaded) { alert('数据加载中，请稍候再试'); return; }
+  /* ========== Tab Switching ========== */
+  function switchTab(tabId) {
+    var tabs = document.querySelectorAll('.tab-item');
+    var contents = document.querySelectorAll('.tab-content');
+    for (var i = 0; i < tabs.length; i++) {
+      tabs[i].className = tabs[i].getAttribute('data-tab') === tabId ? 'tab-item active' : 'tab-item';
+    }
+    for (var j = 0; j < contents.length; j++) {
+      contents[j].className = contents[j].id === 'tab-' + tabId ? 'tab-content active' : 'tab-content';
+    }
+  }
 
-    document.getElementById('res').innerHTML = '';
-    document.getElementById('cta').style.display = 'none';
-    document.getElementById('lf').className = 'lead-form';
-    document.getElementById('ld').className = 'loading show';
+  /* ========== Supplier Search (Tab 1) ========== */
+  function doSupplierSearch(q) {
+    if (!q) { alert('请输入产品或需求关键词'); return; }
+    if (!dataReady) { alert('数据加载中，请稍候'); return; }
+    document.getElementById('supplierResults').innerHTML = '';
+    document.getElementById('supplierCta').style.display = 'none';
+    document.getElementById('supplierLead').className = 'lead-form';
+    document.getElementById('supplierLoading').className = 'loading show';
 
     setTimeout(function() {
       var kw = expandKeywords(q);
-      var results, mode = currentMode;
+      var results = matchCn(kw.cn);
+      document.getElementById('supplierLoading').className = 'loading';
 
-      if (mode === 'indo') {
-        results = matchIndo(kw.en);
+      var html = '';
+      if (results.length > 0) {
+        var hc = 0;
+        for (var k = 0; k < results.length; k++) { if (results[k].cf === '高' || results[k].cf === '中') hc++; }
+        html += '<div class="result-header"><span class="result-count">找到 ' + results.length + ' 家供应商</span><span class="result-tag">' + hc + ' 家中高置信度</span></div>';
+        html += renderCnCards(results, 2);
       } else {
-        results = matchCn(kw.cn);
+        html = '<div class="empty-state"><div class="icon">🔍</div><div class="msg">暂未找到匹配供应商<br/>请尝试其他关键词</div></div>';
       }
+      document.getElementById('supplierResults').innerHTML = html;
 
-      var rendered = renderResults(results, mode);
-      document.getElementById('ld').className = 'loading';
-      document.getElementById('res').innerHTML = rendered.html;
-
-      if (rendered.total > 0) {
-        document.getElementById('cta').innerHTML = renderCta(rendered.total, mode);
-        document.getElementById('cta').style.display = 'block';
-
-        var ctaBtn = document.getElementById('ctaBtn');
-        if (ctaBtn) {
-          ctaBtn.addEventListener('click', function() {
-            showLeadForm();
-          });
-        }
+      if (results.length > 0) {
+        document.getElementById('supplierCta').innerHTML =
+          '<div class="cta-title">💡 获取完整供应商名录 + 一体化方案</div>' +
+          '<div class="cta-desc">解锁 ' + results.length + ' 家供应商完整产品目录、工厂报价<br/>我们提供定制一体化解决方案，降低30%成本</div>' +
+          '<button class="cta-btn" id="sl_cta_btn">留下联系方式，24h内获取方案</button>';
+        document.getElementById('supplierCta').style.display = 'block';
+        var ctaBtn = document.getElementById('sl_cta_btn');
+        if (ctaBtn) ctaBtn.addEventListener('click', function() {
+          document.getElementById('supplierLead').className = 'lead-form show';
+          setTimeout(function() { document.getElementById('supplierLead').scrollIntoView({behavior:'smooth'}); }, 100);
+        });
       }
+    }, 500);
+  }
+
+  /* ========== Buyer Search (Tab 2) ========== */
+  function doBuyerSearch(q) {
+    if (!q) { alert('Please enter keywords'); return; }
+    if (!dataReady) { alert('Data loading, please wait'); return; }
+    document.getElementById('buyerResults').innerHTML = '';
+    document.getElementById('buyerCta').style.display = 'none';
+    document.getElementById('buyerLoading').className = 'loading show';
+
+    setTimeout(function() {
+      var kw = expandKeywords(q);
+      var results = matchIndo(kw.en);
+      document.getElementById('buyerLoading').className = 'loading';
+
+      var html = '';
+      if (results.length > 0) {
+        html += '<div class="result-header"><span class="result-count">Found ' + results.length + ' companies</span><span class="result-tag">Real-time match</span></div>';
+        html += renderIndoCards(results, 2);
+      } else {
+        html = '<div class="empty-state"><div class="icon">🔍</div><div class="msg">No matches found<br/>Please try different keywords</div></div>';
+      }
+      document.getElementById('buyerResults').innerHTML = html;
+
+      if (results.length > 0) {
+        document.getElementById('buyerCta').innerHTML =
+          '<div class="cta-title">⚠️ Unlock all ' + results.length + ' buyers</div>' +
+          '<div class="cta-desc">Get full contact info, purchase history & HS tariff analysis</div>' +
+          '<button class="cta-btn" id="buyer_cta_btn">Get Report [¥3,000]</button>';
+        document.getElementById('buyerCta').style.display = 'block';
+      }
+    }, 500);
+  }
+
+  /* ========== Free Match (Tab 3) ========== */
+  function doFreeSearch(q) {
+    if (!q) { alert('请输入需求描述'); return; }
+    if (!dataReady) { alert('数据加载中，请稍候'); return; }
+    document.getElementById('freeCnResults').innerHTML = '';
+    document.getElementById('freeIndoResults').innerHTML = '';
+    document.getElementById('freeLoading').className = 'loading show';
+
+    setTimeout(function() {
+      var kw = expandKeywords(q);
+      var cnResults = matchCn(kw.cn);
+      var indoResults = matchIndo(kw.en);
+      document.getElementById('freeLoading').className = 'loading';
+
+      document.getElementById('freeCnResults').innerHTML = renderCnCards(cnResults, 2);
+      document.getElementById('freeIndoResults').innerHTML = renderIndoCards(indoResults, 2);
     }, 600);
   }
 
-  function showLeadForm() {
-    var lf = document.getElementById('lf');
-    lf.className = 'lead-form show';
-    setTimeout(function() {
-      lf.scrollIntoView({ behavior: 'smooth' });
-    }, 100);
+  /* ========== Scenario Search (Tab 4) ========== */
+  function renderScenarioCards() {
+    if (!SCENARIOS) return;
+    var html = '';
+    var scenarios = SCENARIOS.scenarios;
+    for (var i = 0; i < scenarios.length; i++) {
+      var s = scenarios[i];
+      html += '<div class="scenario-card" data-sid="' + s.id + '">';
+      html += '<div class="sc-icon">' + s.icon + '</div>';
+      html += '<div class="sc-name">' + escapeHtml(s.name) + '</div>';
+      html += '<div class="sc-name-en">' + escapeHtml(s.name_en) + '</div>';
+      html += '</div>';
+    }
+    document.getElementById('scenarioScroll').innerHTML = html;
+
+    // Bind events
+    var cards = document.querySelectorAll('.scenario-card');
+    for (var j = 0; j < cards.length; j++) {
+      cards[j].addEventListener('click', function() {
+        var sid = this.getAttribute('data-sid');
+        showScenarioDetail(sid);
+        // Update active
+        for (var k = 0; k < cards.length; k++) cards[k].className = 'scenario-card';
+        this.className = 'scenario-card active';
+      });
+    }
   }
 
-  function submitLead() {
-    var co = document.getElementById('lc').value.trim();
-    var na = document.getElementById('ln').value.trim();
-    var ph = document.getElementById('lp').value.trim();
-    if (!co || !na || !ph) { alert('请填写公司名称、姓名和联系方式'); return; }
-    var q = document.getElementById('qi').value.trim();
-    alert('✅ 提交成功！\n\n我们的出海专家将在24小时内与您联系。\n\n匹配关键词：' + q + '\n公司：' + co);
-    document.getElementById('lf').className = 'lead-form';
-  }
+  function showScenarioDetail(sid) {
+    if (!SCENARIOS) return;
+    var scenario = null;
+    for (var i = 0; i < SCENARIOS.scenarios.length; i++) {
+      if (SCENARIOS.scenarios[i].id === sid) { scenario = SCENARIOS.scenarios[i]; break; }
+    }
+    if (!scenario) return;
 
-  function switchMode(mode) {
-    currentMode = mode;
-    document.getElementById('tI').className = mode === 'indo' ? 'mode-tab active' : 'mode-tab';
-    document.getElementById('tC').className = mode === 'cn' ? 'mode-tab active' : 'mode-tab';
-    document.getElementById('res').innerHTML = '';
-    document.getElementById('cta').style.display = 'none';
-    document.getElementById('lf').className = 'lead-form';
-  }
+    var html = '';
+    html += '<div class="sd-title">' + scenario.icon + ' ' + escapeHtml(scenario.name) + ' <span style="font-size:12px;color:#888;font-weight:400">' + escapeHtml(scenario.name_en) + '</span></div>';
+    html += '<div class="sd-desc">' + escapeHtml(scenario.description) + '</div>';
 
-  // Load data
-  function loadData() {
-    var indoPromise = fetch('indo_data.json').then(function(r) { return r.json(); });
-    var cnPromise = fetch('cn_data.json').then(function(r) { return r.json(); });
+    // Techs
+    html += '<div class="sd-section"><div class="sd-section-title">🔧 适用技术</div><div class="tech-tags">';
+    for (var t = 0; t < scenario.techs.length; t++) {
+      html += '<span class="tech-tag">' + escapeHtml(scenario.techs[t]) + '</span>';
+    }
+    html += '</div></div>';
 
-    Promise.all([indoPromise, cnPromise]).then(function(results) {
-      INDO_DATA = results[0];
-      CN_DATA = results[1];
-      dataLoaded = true;
-    }).catch(function(err) {
-      console.error('Data load error:', err);
-      // Try inline fallback - data will be empty
-      dataLoaded = true;
-    });
-  }
+    // Equipments
+    html += '<div class="sd-section"><div class="sd-section-title">🤖 推荐设备</div><div class="equip-list">';
+    for (var e = 0; e < scenario.equipments.length; e++) {
+      var eq = scenario.equipments[e];
+      html += '<div class="equip-item"><div class="eq-name">' + escapeHtml(eq.name) + '</div><div class="eq-desc">' + escapeHtml(eq.desc) + '</div></div>';
+    }
+    html += '</div></div>';
 
-  // Initialize event listeners
-  function init() {
-    loadData();
+    // Companies
+    html += '<div class="sd-section"><div class="sd-section-title">🏢 推荐企业（点击搜索匹配）</div><div class="company-chips">';
+    for (var c = 0; c < scenario.companies.length; c++) {
+      html += '<span class="company-chip" data-cname="' + escapeHtml(scenario.companies[c]) + '">' + escapeHtml(scenario.companies[c]) + '</span>';
+    }
+    html += '</div></div>';
 
-    // Search button
-    document.getElementById('searchBtn').addEventListener('click', doSearch);
+    // Cases
+    html += '<div class="sd-section"><div class="sd-section-title">📋 案例预设</div>';
+    for (var ca = 0; ca < scenario.cases.length; ca++) {
+      var cs = scenario.cases[ca];
+      html += '<div class="case-card"><div class="case-title">' + escapeHtml(cs.title) + '</div><div class="case-desc">' + escapeHtml(cs.desc) + '</div></div>';
+    }
+    html += '</div>';
 
-    // Enter key
-    document.getElementById('qi').addEventListener('keypress', function(e) {
-      if (e.key === 'Enter') doSearch();
-    });
+    // Action button
+    html += '<button class="scenario-action-btn" data-scenario-q="' + escapeHtml(scenario.name + ' ' + scenario.techs.slice(0,3).join(' ')) + '">🔍 查找该场景匹配供应商</button>';
 
-    // Mode tabs
-    document.getElementById('tI').addEventListener('click', function() { switchMode('indo'); });
-    document.getElementById('tC').addEventListener('click', function() { switchMode('cn'); });
+    var detail = document.getElementById('scenarioDetail');
+    detail.innerHTML = html;
+    detail.className = 'scenario-detail show';
 
-    // Hot tags
-    var tags = document.querySelectorAll('.hot-tag');
-    for (var i = 0; i < tags.length; i++) {
-      tags[i].addEventListener('click', function() {
-        document.getElementById('qi').value = this.getAttribute('data-q');
-        doSearch();
+    // Bind company chip events
+    var chips = detail.querySelectorAll('.company-chip');
+    for (var ci = 0; ci < chips.length; ci++) {
+      chips[ci].addEventListener('click', function() {
+        var cname = this.getAttribute('data-cname');
+        switchTab('free');
+        document.getElementById('freeInput').value = cname;
+        doFreeSearch(cname);
       });
     }
 
-    // Submit button
-    document.getElementById('submitBtn').addEventListener('click', submitLead);
+    // Bind action button
+    var actionBtn = detail.querySelector('.scenario-action-btn');
+    if (actionBtn) {
+      actionBtn.addEventListener('click', function() {
+        var q = this.getAttribute('data-scenario-q');
+        switchTab('free');
+        document.getElementById('freeInput').value = q;
+        doFreeSearch(q);
+      });
+    }
   }
 
-  // Start
+  /* ========== Top Companies ========== */
+  function renderTopCompanies() {
+    if (!TOP_DATA) return;
+    var cats = TOP_DATA.categories;
+    // Cat tabs
+    var tabHtml = '';
+    for (var i = 0; i < cats.length; i++) {
+      tabHtml += '<div class="top-cat-tab' + (i===0?' active':'') + '" data-cat="' + cats[i].id + '">' + cats[i].icon + ' ' + escapeHtml(cats[i].name) + '</div>';
+    }
+    document.getElementById('topCatTabs').innerHTML = tabHtml;
+
+    function showCat(catId) {
+      var cat = null;
+      for (var i = 0; i < cats.length; i++) { if (cats[i].id === catId) { cat = cats[i]; break; } }
+      if (!cat) return;
+      var html = '';
+      var list = cat.companies;
+      for (var j = 0; j < list.length; j++) {
+        var co = list[j];
+        html += '<div class="top-company-card">';
+        html += '<div class="tc-name">' + escapeHtml(co.name) + '</div>';
+        html += '<div class="tc-val">💰 ' + escapeHtml(co.valuation) + '</div>';
+        html += '<div class="tc-product">' + escapeHtml(co.products) + '</div>';
+        html += '<div class="tc-highlight">' + escapeHtml(co.highlight) + '</div>';
+        html += '</div>';
+      }
+      document.getElementById('topCompanyList').innerHTML = html;
+    }
+
+    showCat(cats[0].id);
+
+    var tabs = document.querySelectorAll('.top-cat-tab');
+    for (var k = 0; k < tabs.length; k++) {
+      tabs[k].addEventListener('click', function() {
+        for (var m = 0; m < tabs.length; m++) tabs[m].className = 'top-cat-tab';
+        this.className = 'top-cat-tab active';
+        showCat(this.getAttribute('data-cat'));
+      });
+    }
+  }
+
+  function renderFeaturedProducts() {
+    if (!TOP_DATA) return;
+    var products = TOP_DATA.featured_products;
+    var html = '';
+    for (var i = 0; i < products.length; i++) {
+      var p = products[i];
+      html += '<div class="featured-card">';
+      html += '<div class="fc-company">' + escapeHtml(p.company) + '</div>';
+      html += '<div class="fc-product">' + escapeHtml(p.product) + '</div>';
+      if (p.price) html += '<span class="fc-price">💲 ' + escapeHtml(p.price) + '</span>';
+      html += '<div class="fc-specs">' + escapeHtml(p.specs) + '</div>';
+      html += '<div class="fc-highlight">' + escapeHtml(p.highlight) + '</div>';
+      html += '</div>';
+    }
+    document.getElementById('featuredScroll').innerHTML = html;
+  }
+
+  /* ========== Data Loading ========== */
+  function loadData() {
+    var fetchOpts = { cache: 'no-cache' };
+    var p1 = fetch('indo_data.json', fetchOpts).then(function(r) { return r.json(); });
+    var p2 = fetch('cn_data.json', fetchOpts).then(function(r) { return r.json(); });
+    var p3 = fetch('top_companies.json', fetchOpts).then(function(r) { return r.json(); });
+    var p4 = fetch('scenarios.json', fetchOpts).then(function(r) { return r.json(); });
+
+    Promise.all([p1, p2, p3, p4]).then(function(results) {
+      INDO_DATA = results[0];
+      CN_DATA = results[1];
+      TOP_DATA = results[2];
+      SCENARIOS = results[3];
+      dataReady = true;
+
+      // Update stats
+      document.getElementById('statIndo').textContent = INDO_DATA.length.toLocaleString();
+      document.getElementById('statCn').textContent = CN_DATA.length.toLocaleString();
+      var topCount = 0;
+      if (TOP_DATA && TOP_DATA.categories) {
+        for (var i = 0; i < TOP_DATA.categories.length; i++) topCount += TOP_DATA.categories[i].companies.length;
+      }
+      document.getElementById('statTop').textContent = topCount || '--';
+
+      // Render scenario cards and top companies
+      renderScenarioCards();
+      renderTopCompanies();
+      renderFeaturedProducts();
+    }).catch(function(err) {
+      console.error('Data load error:', err);
+      dataReady = true;
+      document.getElementById('statIndo').textContent = '!';
+      document.getElementById('statCn').textContent = '!';
+    });
+  }
+
+  /* ========== Lead Form Submit ========== */
+  function submitLead() {
+    var co = document.getElementById('sl_co').value.trim();
+    var na = document.getElementById('sl_na').value.trim();
+    var ph = document.getElementById('sl_ph').value.trim();
+    if (!co || !na || !ph) { alert('请填写公司名称、姓名和联系方式'); return; }
+    alert('✅ 提交成功！\n\n我们的出海专家将在24小时内与您联系。\n\n公司：' + co);
+    document.getElementById('supplierLead').className = 'lead-form';
+  }
+
+  /* ========== Init ========== */
+  function init() {
+    loadData();
+
+    // Tab nav
+    var tabItems = document.querySelectorAll('.tab-item');
+    for (var i = 0; i < tabItems.length; i++) {
+      tabItems[i].addEventListener('click', function() {
+        switchTab(this.getAttribute('data-tab'));
+      });
+    }
+
+    // Supplier search
+    document.getElementById('supplierBtn').addEventListener('click', function() {
+      doSupplierSearch(document.getElementById('supplierInput').value.trim());
+    });
+    document.getElementById('supplierInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') doSupplierSearch(this.value.trim());
+    });
+    var sTags = document.querySelectorAll('#supplierTags .hot-tag');
+    for (var si = 0; si < sTags.length; si++) {
+      sTags[si].addEventListener('click', function() {
+        document.getElementById('supplierInput').value = this.getAttribute('data-q');
+        doSupplierSearch(this.getAttribute('data-q'));
+      });
+    }
+
+    // Buyer search
+    document.getElementById('buyerBtn').addEventListener('click', function() {
+      doBuyerSearch(document.getElementById('buyerInput').value.trim());
+    });
+    document.getElementById('buyerInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') doBuyerSearch(this.value.trim());
+    });
+    var bTags = document.querySelectorAll('#buyerTags .hot-tag');
+    for (var bi = 0; bi < bTags.length; bi++) {
+      bTags[bi].addEventListener('click', function() {
+        document.getElementById('buyerInput').value = this.getAttribute('data-q');
+        doBuyerSearch(this.getAttribute('data-q'));
+      });
+    }
+
+    // Free match
+    document.getElementById('freeBtn').addEventListener('click', function() {
+      doFreeSearch(document.getElementById('freeInput').value.trim());
+    });
+    var fTags = document.querySelectorAll('[data-fq]');
+    for (var fi = 0; fi < fTags.length; fi++) {
+      fTags[fi].addEventListener('click', function() {
+        var q = this.getAttribute('data-fq');
+        document.getElementById('freeInput').value = q;
+        doFreeSearch(q);
+      });
+    }
+
+    // Lead submit
+    document.getElementById('sl_submit').addEventListener('click', submitLead);
+  }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
