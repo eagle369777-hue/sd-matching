@@ -541,7 +541,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
   /* ========== Supplier Search (Tab 1) ========== */
   function doSupplierSearch(q) {
     if (!q) { alert('请输入产品或需求关键词'); return; }
-    if (!dataReady) { alert('数据加载中，请稍候'); return; }
+    if (CN_DATA.length === 0) { alert('国内供应商数据加载中，请稍候…'); return; }
     document.getElementById('supplierResults').innerHTML = '';
     document.getElementById('supplierCta').style.display = 'none';
     document.getElementById('supplierLead').className = 'lead-form';
@@ -581,7 +581,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
   /* ========== Buyer Search (Tab 2) ========== */
   function doBuyerSearch(q) {
     if (!q) { alert('Please enter keywords'); return; }
-    if (!dataReady) { alert('Data loading, please wait'); return; }
+    if (INDO_DATA.length === 0) { alert('印尼企业数据加载中，请稍候…'); return; }
     document.getElementById('buyerResults').innerHTML = '';
     document.getElementById('buyerCta').style.display = 'none';
     document.getElementById('buyerLoading').className = 'loading show';
@@ -613,20 +613,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
   /* ========== Free Match (Tab 3) ========== */
   function doFreeSearch(q) {
     if (!q) { alert('请输入需求描述'); return; }
-    if (!dataReady) { alert('数据加载中，请稍候'); return; }
+    if (CN_DATA.length === 0 && INDO_DATA.length === 0) { alert('数据加载中，请稍候…'); return; }
     document.getElementById('freeCnResults').innerHTML = '';
     document.getElementById('freeIndoResults').innerHTML = '';
     document.getElementById('freeLoading').className = 'loading show';
 
     setTimeout(function() {
       var kw = expandKeywords(q);
-      var cnResults = matchCn(kw.cn);
-      var indoResults = matchIndo(kw.en);
+      var cnResults = CN_DATA.length > 0 ? matchCn(kw.cn) : [];
+      var indoResults = INDO_DATA.length > 0 ? matchIndo(kw.en) : [];
       document.getElementById('freeLoading').className = 'loading';
 
-      document.getElementById('freeCnResults').innerHTML = renderCnCards(cnResults, 2);
-      document.getElementById('freeIndoResults').innerHTML = renderIndoCards(indoResults, 2);
-    }, 600);
+      if (CN_DATA.length === 0) {
+        document.getElementById('freeCnResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">⚠ 数据加载中…</div>';
+      } else {
+        document.getElementById('freeCnResults').innerHTML = renderCnCards(cnResults, 2);
+      }
+      if (INDO_DATA.length === 0) {
+        document.getElementById('freeIndoResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">⚠ Data loading…</div>';
+      } else {
+        document.getElementById('freeIndoResults').innerHTML = renderIndoCards(indoResults, 2);
+      }
+    }, 400);
   }
 
   /* ========== Scenario Search (Tab 4) ========== */
@@ -787,39 +795,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     document.getElementById('featuredScroll').innerHTML = html;
   }
 
-  /* ========== Data Loading ========== */
+  /* ========== Data Loading (Independent) ========== */
+  var loadedCount = 0;
+  function checkDataReady() {
+    loadedCount++;
+    if (CN_DATA.length > 0 || INDO_DATA.length > 0) dataReady = true;
+  }
   function loadData() {
-    var fetchOpts = { cache: 'no-cache' };
-    var p1 = fetch('indo_data.json', fetchOpts).then(function(r) { return r.json(); });
-    var p2 = fetch('cn_data.json', fetchOpts).then(function(r) { return r.json(); });
-    var p3 = fetch('top_companies.json', fetchOpts).then(function(r) { return r.json(); });
-    var p4 = fetch('scenarios.json', fetchOpts).then(function(r) { return r.json(); });
-
-    Promise.all([p1, p2, p3, p4]).then(function(results) {
-      INDO_DATA = results[0];
-      CN_DATA = results[1];
-      TOP_DATA = results[2];
-      SCENARIOS = results[3];
-      dataReady = true;
-
-      // Update stats
+    // Load each file independently
+    fetch('indo_data.json', {cache:'no-cache'}).then(function(r){return r.json();}).then(function(d){
+      INDO_DATA = d;
       document.getElementById('statIndo').textContent = INDO_DATA.length.toLocaleString();
+      checkDataReady();
+    }).catch(function(e){
+      console.warn('indo_data load failed:', e);
+      document.getElementById('statIndo').textContent = '⚠';
+      checkDataReady();
+    });
+    fetch('cn_data.json', {cache:'no-cache'}).then(function(r){return r.json();}).then(function(d){
+      CN_DATA = d;
       document.getElementById('statCn').textContent = CN_DATA.length.toLocaleString();
+      checkDataReady();
+    }).catch(function(e){
+      console.warn('cn_data load failed:', e);
+      document.getElementById('statCn').textContent = '⚠';
+      checkDataReady();
+    });
+    fetch('top_companies.json', {cache:'no-cache'}).then(function(r){return r.json();}).then(function(d){
+      TOP_DATA = d;
       var topCount = 0;
       if (TOP_DATA && TOP_DATA.categories) {
         for (var i = 0; i < TOP_DATA.categories.length; i++) topCount += TOP_DATA.categories[i].companies.length;
       }
       document.getElementById('statTop').textContent = topCount || '--';
-
-      // Render scenario cards and top companies
-      renderScenarioCards();
       renderTopCompanies();
       renderFeaturedProducts();
-    }).catch(function(err) {
-      console.error('Data load error:', err);
-      dataReady = true;
-      document.getElementById('statIndo').textContent = '!';
-      document.getElementById('statCn').textContent = '!';
+    }).catch(function(e){
+      console.warn('top_companies load failed:', e);
+      document.getElementById('statTop').textContent = '⚠';
+    });
+    fetch('scenarios.json', {cache:'no-cache'}).then(function(r){return r.json();}).then(function(d){
+      SCENARIOS = d;
+      renderScenarioCards();
+    }).catch(function(e){
+      console.warn('scenarios load failed:', e);
     });
   }
 
