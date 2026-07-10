@@ -536,12 +536,24 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     for (var j = 0; j < contents.length; j++) {
       contents[j].className = contents[j].id === 'tab-' + tabId ? 'tab-content active' : 'tab-content';
     }
+    // Lazy load data on tab switch
+    if (tabId === 'buyer' && !indoLoaded) {
+      loadIndoData();
+    }
+    if ((tabId === 'free') && (!cnLoaded || !indoLoaded)) {
+      loadCnData();
+      loadIndoData();
+    }
   }
 
   /* ========== Supplier Search (Tab 1) ========== */
   function doSupplierSearch(q) {
     if (!q) { alert('请输入产品或需求关键词'); return; }
-    if (CN_DATA.length === 0) { alert('国内供应商数据加载中，请稍候…'); return; }
+    if (!cnLoaded) {
+      alert('国内供应商数据正在加载中，请稍候再试…');
+      loadCnData();
+      return;
+    }
     document.getElementById('supplierResults').innerHTML = '';
     document.getElementById('supplierCta').style.display = 'none';
     document.getElementById('supplierLead').className = 'lead-form';
@@ -581,7 +593,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
   /* ========== Buyer Search (Tab 2) ========== */
   function doBuyerSearch(q) {
     if (!q) { alert('Please enter keywords'); return; }
-    if (INDO_DATA.length === 0) { alert('印尼企业数据加载中，请稍候…'); return; }
+    if (!indoLoaded) {
+      if (indoLoading) {
+        alert('印尼企业数据正在加载中，请稍候再试…');
+      } else {
+        alert('印尼企业数据正在加载，请稍候再点击匹配…');
+        loadIndoData();
+      }
+      return;
+    }
     document.getElementById('buyerResults').innerHTML = '';
     document.getElementById('buyerCta').style.display = 'none';
     document.getElementById('buyerLoading').className = 'loading show';
@@ -613,24 +633,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
   /* ========== Free Match (Tab 3) ========== */
   function doFreeSearch(q) {
     if (!q) { alert('请输入需求描述'); return; }
-    if (CN_DATA.length === 0 && INDO_DATA.length === 0) { alert('数据加载中，请稍候…'); return; }
+    if (!cnLoaded && !indoLoaded) {
+      alert('数据正在加载中，请稍候再试…');
+      loadCnData();
+      loadIndoData();
+      return;
+    }
     document.getElementById('freeCnResults').innerHTML = '';
     document.getElementById('freeIndoResults').innerHTML = '';
     document.getElementById('freeLoading').className = 'loading show';
 
     setTimeout(function() {
       var kw = expandKeywords(q);
-      var cnResults = CN_DATA.length > 0 ? matchCn(kw.cn) : [];
-      var indoResults = INDO_DATA.length > 0 ? matchIndo(kw.en) : [];
+      var cnResults = cnLoaded ? matchCn(kw.cn) : [];
+      var indoResults = indoLoaded ? matchIndo(kw.en) : [];
       document.getElementById('freeLoading').className = 'loading';
 
-      if (CN_DATA.length === 0) {
-        document.getElementById('freeCnResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">⚠ 数据加载中…</div>';
+      if (!cnLoaded) {
+        document.getElementById('freeCnResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">⏳ 国内数据加载中，请稍候重试…</div>';
       } else {
         document.getElementById('freeCnResults').innerHTML = renderCnCards(cnResults, 2);
       }
-      if (INDO_DATA.length === 0) {
-        document.getElementById('freeIndoResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">⚠ Data loading…</div>';
+      if (!indoLoaded) {
+        document.getElementById('freeIndoResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">⏳ 印尼数据加载中，请稍候重试…</div>';
       } else {
         document.getElementById('freeIndoResults').innerHTML = renderIndoCards(indoResults, 2);
       }
@@ -795,33 +820,87 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     document.getElementById('featuredScroll').innerHTML = html;
   }
 
-  /* ========== Data Loading (Independent) ========== */
-  var loadedCount = 0;
-  function checkDataReady() {
-    loadedCount++;
-    if (CN_DATA.length > 0 || INDO_DATA.length > 0) dataReady = true;
+  /* ========== Data Loading (Lazy + XHR with timeout & retry) ========== */
+  var cnLoaded = false, indoLoaded = false, cnLoading = false, indoLoading = false;
+
+  function xhrLoad(url, timeout, maxRetry, onSuccess, onFail) {
+    var attempt = 0;
+    function tryLoad() {
+      attempt++;
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', url, true);
+      xhr.timeout = timeout;
+      xhr.onload = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+          try { onSuccess(JSON.parse(xhr.responseText)); }
+          catch(e) { console.warn('JSON parse error for ' + url, e); onFail(e); }
+        } else {
+          console.warn('HTTP ' + xhr.status + ' for ' + url);
+          if (attempt < maxRetry) { setTimeout(tryLoad, 1000); } else { onFail(new Error('HTTP ' + xhr.status)); }
+        }
+      };
+      xhr.ontimeout = function() {
+        console.warn('Timeout loading ' + url + ' (attempt ' + attempt + ')');
+        if (attempt < maxRetry) { setTimeout(tryLoad, 1500); } else { onFail(new Error('timeout')); }
+      };
+      xhr.onerror = function() {
+        console.warn('Network error loading ' + url + ' (attempt ' + attempt + ')');
+        if (attempt < maxRetry) { setTimeout(tryLoad, 1500); } else { onFail(new Error('network')); }
+      };
+      xhr.send();
+    }
+    tryLoad();
   }
-  function loadData() {
-    // Load each file independently
-    fetch('indo_data.json', {cache:'no-cache'}).then(function(r){return r.json();}).then(function(d){
-      INDO_DATA = d;
-      document.getElementById('statIndo').textContent = INDO_DATA.length.toLocaleString();
-      checkDataReady();
-    }).catch(function(e){
-      console.warn('indo_data load failed:', e);
-      document.getElementById('statIndo').textContent = '⚠';
-      checkDataReady();
-    });
-    fetch('cn_data.json', {cache:'no-cache'}).then(function(r){return r.json();}).then(function(d){
+
+  function loadCnData(callback) {
+    if (cnLoaded) { if (callback) callback(); return; }
+    if (cnLoading) {
+      var check = setInterval(function() { if (cnLoaded) { clearInterval(check); if (callback) callback(); } }, 200);
+      setTimeout(function() { clearInterval(check); }, 60000);
+      return;
+    }
+    cnLoading = true;
+    document.getElementById('statCn').textContent = '⏳';
+    xhrLoad('cn_data.json', 30000, 3, function(d) {
       CN_DATA = d;
+      cnLoaded = true;
+      cnLoading = false;
+      dataReady = true;
       document.getElementById('statCn').textContent = CN_DATA.length.toLocaleString();
-      checkDataReady();
-    }).catch(function(e){
-      console.warn('cn_data load failed:', e);
+      if (callback) callback();
+    }, function(e) {
+      cnLoading = false;
       document.getElementById('statCn').textContent = '⚠';
-      checkDataReady();
+      console.warn('cn_data load failed:', e);
     });
-    fetch('top_companies.json', {cache:'no-cache'}).then(function(r){return r.json();}).then(function(d){
+  }
+
+  function loadIndoData(callback) {
+    if (indoLoaded) { if (callback) callback(); return; }
+    if (indoLoading) {
+      var check = setInterval(function() { if (indoLoaded) { clearInterval(check); if (callback) callback(); } }, 200);
+      setTimeout(function() { clearInterval(check); }, 60000);
+      return;
+    }
+    indoLoading = true;
+    document.getElementById('statIndo').textContent = '⏳';
+    xhrLoad('indo_data.json', 45000, 3, function(d) {
+      INDO_DATA = d;
+      indoLoaded = true;
+      indoLoading = false;
+      dataReady = true;
+      document.getElementById('statIndo').textContent = INDO_DATA.length.toLocaleString();
+      if (callback) callback();
+    }, function(e) {
+      indoLoading = false;
+      document.getElementById('statIndo').textContent = '⚠';
+      console.warn('indo_data load failed:', e);
+    });
+  }
+
+  function loadData() {
+    // Eagerly load small files
+    xhrLoad('top_companies.json', 15000, 2, function(d) {
       TOP_DATA = d;
       var topCount = 0;
       if (TOP_DATA && TOP_DATA.categories) {
@@ -830,16 +909,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       document.getElementById('statTop').textContent = topCount || '--';
       renderTopCompanies();
       renderFeaturedProducts();
-    }).catch(function(e){
+    }, function(e) {
       console.warn('top_companies load failed:', e);
       document.getElementById('statTop').textContent = '⚠';
     });
-    fetch('scenarios.json', {cache:'no-cache'}).then(function(r){return r.json();}).then(function(d){
+    xhrLoad('scenarios.json', 15000, 2, function(d) {
       SCENARIOS = d;
       renderScenarioCards();
-    }).catch(function(e){
+    }, function(e) {
       console.warn('scenarios load failed:', e);
     });
+    // Preload cn_data in background (small file ~225KB)
+    loadCnData();
+    // indo_data lazy - only when user needs it
   }
 
   /* ========== Lead Form Submit ========== */
