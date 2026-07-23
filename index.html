@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>S&D 具身智能出海匹配</title>
+<title>具身智能出海匹配</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:#0a0e1a;color:#e0e0e0;min-height:100vh;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%}
@@ -64,6 +64,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 .result-card .ilbl{color:#666;min-width:42px;flex-shrink:0}
 .result-card .ival{color:#ccc;flex:1;word-break:break-all}
 .result-card .mscore{display:inline-block;background:rgba(102,126,234,0.12);color:#667eea;font-size:10px;padding:2px 8px;border-radius:6px;margin-top:6px}
+
+/* Swipe hint for horizontal scroll areas */
+.scroll-hint{text-align:center;font-size:11px;color:#667eea;margin-top:-8px;margin-bottom:12px;opacity:.85;animation:swipeHint 2s ease-in-out infinite;letter-spacing:1px}
+@keyframes swipeHint{0%,100%{opacity:.5;transform:translateX(0)}50%{opacity:1;transform:translateX(4px)}}
+.scroll-wrap{position:relative}
+.scroll-fade-right{position:absolute;right:0;top:0;bottom:20px;width:32px;background:linear-gradient(to right,transparent,rgba(18,16,36,0.9));pointer-events:none;border-radius:0 12px 12px 0;z-index:2}
+
 /* CTA */
 .cta-box{background:linear-gradient(135deg,rgba(102,126,234,0.1),rgba(118,75,162,0.1));border:1px solid rgba(102,126,234,0.2);border-radius:14px;padding:18px;margin-top:14px;text-align:center}
 .cta-box .cta-title{font-size:15px;font-weight:700;color:#fff;margin-bottom:6px}
@@ -142,28 +149,40 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 .scenario-action-btn{display:block;width:100%;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;padding:12px;font-size:13px;font-weight:600;cursor:pointer;margin-top:14px;-webkit-appearance:none}
 /* Data Load Error */
 .load-error{background:rgba(255,59,48,0.1);border:1px solid rgba(255,59,48,0.2);border-radius:10px;padding:14px;margin:16px 0;text-align:center;color:#ff6b6b;font-size:12px}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:9998;align-items:center;justify-content:center;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal-content{background:linear-gradient(135deg,#1a1833,#252040);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:24px;max-width:360px;width:90%;position:relative;animation:modalIn .3s ease}
+@keyframes modalIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+.modal-close{position:absolute;top:12px;right:12px;background:none;border:none;color:#888;font-size:18px;cursor:pointer}
+.modal-close:active{color:#fff}
+
+/* Language Toggle */
+.lang-toggle{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:16px;padding:4px 14px;font-size:11px;color:rgba(255,255,255,0.85);cursor:pointer;position:absolute;top:16px;right:16px;z-index:10;-webkit-appearance:none;user-select:none;transition:background .2s}
+.lang-toggle:active{background:rgba(255,255,255,0.2)}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <h1>S&D 印尼出海首席大管家</h1>
-  <div class="sub">具身智能双向供需匹配平台</div>
-  <div class="brand">友吉智汇 · Embodied AI Sourcing</div>
+  <button class="lang-toggle" id="langToggle" onclick="toggleLanguage()">EN</button>
+  <div class="sub" data-i18n="header_sub">具身智能双向供需匹配平台</div>
+  <div class="brand" data-i18n="header_brand">Embodied AI Sourcing Platform</div>
 </div>
 
 <div class="stats-bar">
-  <div class="stat-item"><div class="stat-num" id="statIndo">--</div><div class="stat-label">印尼企业</div></div>
-  <div class="stat-item"><div class="stat-num" id="statCn">--</div><div class="stat-label">国内供应商</div></div>
-  <div class="stat-item"><div class="stat-num">5</div><div class="stat-label">应用场景</div></div>
-  <div class="stat-item"><div class="stat-num" id="statTop">--</div><div class="stat-label">头部企业</div></div>
+  <div class="stat-item"><div class="stat-num" id="statIndo">--</div><div class="stat-label" data-i18n="stat_indo">印尼企业</div></div>
+  <div class="stat-item"><div class="stat-num" id="statCn">--</div><div class="stat-label" data-i18n="stat_cn">国内供应商</div></div>
+  <div class="stat-item"><div class="stat-num" id="statScenario">6</div><div class="stat-label" data-i18n="stat_scenario">应用场景</div></div>
+  <div class="stat-item"><div class="stat-num" id="statTop">--</div><div class="stat-label" data-i18n="stat_top">头部企业</div></div>
 </div>
 
 <div class="tab-nav" id="tabNav">
-  <div class="tab-item active" data-tab="supplier"><span class="tab-icon">🇨🇳</span>找国内供应商</div>
-  <div class="tab-item" data-tab="buyer"><span class="tab-icon">🇮🇩</span>找印尼买家</div>
-  <div class="tab-item" data-tab="free"><span class="tab-icon">🔄</span>自由匹配</div>
-  <div class="tab-item" data-tab="scenario"><span class="tab-icon">🎯</span>场景搜索</div>
+  <div class="tab-item active" data-tab="supplier"><span class="tab-icon">🇨🇳</span><span data-i18n="tab_supplier">找国内供应商</span></div>
+  <div class="tab-item" data-tab="buyer"><span class="tab-icon">🇮🇩</span><span data-i18n="tab_buyer">找印尼买家</span></div>
+  <div class="tab-item" data-tab="free"><span class="tab-icon">🔄</span><span data-i18n="tab_free">自由匹配</span></div>
+  <div class="tab-item" data-tab="scenario"><span class="tab-icon">🎯</span><span data-i18n="tab_scenario">场景搜索</span></div>
 </div>
 
 <div class="container">
@@ -171,104 +190,313 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
   <!-- Tab 1: 找国内供应商 -->
   <div class="tab-content active" id="tab-supplier">
     <div class="search-box">
-      <label>🔍 输入产品或需求，匹配国内供应商</label>
+      <label data-i18n="supplier_label">🔍 输入产品或需求，匹配国内供应商</label>
       <div class="search-input-wrap">
-        <input class="search-input" id="supplierInput" type="text" placeholder="如：3D视觉传感器、协作机器人…" />
-        <button class="search-btn" id="supplierBtn">匹配</button>
+        <input class="search-input" id="supplierInput" type="text" placeholder="如：3D视觉传感器、协作机器人…" data-i18n-placeholder="supplier_placeholder" />
+        <button class="search-btn" id="supplierBtn" data-i18n="btn_match">匹配</button>
       </div>
       <div class="hot-tags" id="supplierTags">
-        <span class="hot-tag" data-q="3D视觉传感器">3D视觉传感器</span>
-        <span class="hot-tag" data-q="焊接机器人">焊接机器人</span>
-        <span class="hot-tag" data-q="协作机器人">协作机器人</span>
-        <span class="hot-tag" data-q="AGV物流">AGV物流</span>
-        <span class="hot-tag" data-q="激光切割">激光切割</span>
-        <span class="hot-tag" data-q="半导体">半导体</span>
-        <span class="hot-tag" data-q="新能源">新能源</span>
-        <span class="hot-tag" data-q="汽车零部件">汽车零部件</span>
+        <span class="hot-tag" data-q="3D视觉传感器" data-qen="3D vision sensor" data-tagzh="3D视觉传感器" data-tagen="3D Vision Sensor">3D视觉传感器</span>
+        <span class="hot-tag" data-q="焊接机器人" data-qen="welding robot" data-tagzh="焊接机器人" data-tagen="Welding Robot">焊接机器人</span>
+        <span class="hot-tag" data-q="协作机器人" data-qen="cobot" data-tagzh="协作机器人" data-tagen="Collaborative Robot">协作机器人</span>
+        <span class="hot-tag" data-q="AGV物流" data-qen="AGV logistics" data-tagzh="AGV物流" data-tagen="AGV Logistics">AGV物流</span>
+        <span class="hot-tag" data-q="激光切割" data-qen="laser cutting" data-tagzh="激光切割" data-tagen="Laser Cutting">激光切割</span>
+        <span class="hot-tag" data-q="半导体" data-qen="semiconductor" data-tagzh="半导体" data-tagen="Semiconductor">半导体</span>
+        <span class="hot-tag" data-q="新能源" data-qen="new energy" data-tagzh="新能源" data-tagen="New Energy">新能源</span>
+        <span class="hot-tag" data-q="汽车零部件" data-qen="auto parts" data-tagzh="汽车零部件" data-tagen="Auto Parts">汽车零部件</span>
       </div>
     </div>
-    <div id="supplierLoading" class="loading"><div class="spinner"></div><div class="ltext">正在检索匹配中…</div></div>
+    <div id="supplierLoading" class="loading"><div class="spinner"></div><div class="ltext" data-i18n="loading_search">正在检索匹配中…</div></div>
     <div id="supplierResults" class="results"></div>
     <div id="supplierCta" class="cta-box" style="display:none"></div>
     <div id="supplierLead" class="lead-form">
-      <h3>📝 留下联系方式，获取完整匹配报告</h3>
-      <input class="lead-input" id="sl_co" type="text" placeholder="公司名称 *"/>
-      <input class="lead-input" id="sl_na" type="text" placeholder="您的姓名 *"/>
-      <input class="lead-input" id="sl_ph" type="tel" placeholder="手机号码 / WhatsApp *"/>
-      <input class="lead-input" id="sl_em" type="email" placeholder="邮箱（选填）"/>
-      <button class="lead-submit" id="sl_submit">提交，获取完整报告</button>
+      <h3 data-i18n="lead_title">📋 场景需求提交 — ¥3,000 基础套餐 / 陪跑套餐可选</h3>
+      <p style="font-size:11px;color:#888;margin:6px 0 14px;line-height:1.6" data-i18n="lead_subtitle">填写需求信息后，平台方将在24小时内与您联系，提供供需诊断、匹配方案、数据库报告及后续服务</p>
+      
+      <!-- 基本信息 -->
+      <div style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_basic">▎基本信息</div>
+        <input class="lead-input" id="sl_co" type="text" placeholder="公司名称 *" data-i18n-placeholder="lead_company"/>
+        <input class="lead-input" id="sl_na" type="text" placeholder="您的姓名 *" data-i18n-placeholder="lead_name"/>
+        <input class="lead-input" id="sl_ph" type="tel" placeholder="手机号码 *" data-i18n-placeholder="lead_phone"/>
+        <input class="lead-input" id="sl_em" type="email" placeholder="邮箱 *" data-i18n-placeholder="lead_email"/>
+        <input class="lead-input" id="sl_wx" type="text" placeholder="微信号（与WhatsApp二选一）" data-i18n-placeholder="lead_wechat"/>
+        <input class="lead-input" id="sl_wa" type="tel" placeholder="WhatsApp号（与微信二选一）" data-i18n-placeholder="lead_whatsapp"/>
+      </div>
+      
+      <!-- 场景需求 -->
+      <div style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_scenario">▎场景需求</div>
+        <select class="lead-input" id="sl_scenario" data-i18n-placeholder="lead_scenario">
+          <option value="" data-i18n="lead_scenario_opt0">请选择应用场景 *</option>
+          <option value="smart_factory" data-i18n="lead_scenario_opt1">🏭 智能制造工厂</option>
+          <option value="warehouse_logistics" data-i18n="lead_scenario_opt2">📦 仓储物流</option>
+          <option value="elderly_care" data-i18n="lead_scenario_opt3">🧓 养老护理</option>
+          <option value="medical_rehab" data-i18n="lead_scenario_opt4">🏥 医疗康复</option>
+          <option value="education_training" data-i18n="lead_scenario_opt5">🎓 教育培训</option>
+          <option value="cultural_tourism" data-i18n="lead_scenario_opt6">🎢 文旅娱乐</option>
+          <option value="other" data-i18n="lead_scenario_opt7">其他 / 暂不确定</option>
+        </select>
+        <textarea class="lead-input" id="sl_desc" placeholder="请详细描述您的需求，例如：&#10;• 应用场景的具体情况（行业/规模/当前痛点）&#10;• 需要什么样的机器人/设备&#10;• 期望达成的效果&#10;• 期望的交付周期" data-i18n-placeholder="lead_desc" rows="5" style="resize:vertical;font-family:inherit"></textarea>
+      </div>
+      
+      <!-- 预算与合作意向 -->
+      <div style="padding-bottom:8px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_budget">▎预算与合作意向</div>
+        <select class="lead-input" id="sl_budget" data-i18n-placeholder="lead_budget">
+          <option value="" data-i18n="lead_budget_opt0">请选择预算范围（选填）</option>
+          <option value="under50w" data-i18n="lead_budget_opt1">50万以下</option>
+          <option value="50w_100w" data-i18n="lead_budget_opt2">50万-100万</option>
+          <option value="100w_300w" data-i18n="lead_budget_opt3">100万-300万</option>
+          <option value="300w_500w" data-i18n="lead_budget_opt4">300万-500万</option>
+          <option value="over500w" data-i18n="lead_budget_opt5">500万以上</option>
+        </select>
+        <select class="lead-input" id="sl_package" data-i18n-placeholder="lead_package">
+          <option value="" data-i18n="lead_package_opt0">请选择合作套餐 *</option>
+          <option value="basic" data-i18n="lead_package_opt1">📋 基础套餐（¥3,000）— 诊断+方案+报告+沙龙</option>
+          <option value="accompanied" data-i18n="lead_package_opt2">🚀 陪跑套餐（¥3,000+首单提成）— 含精准对接+全程跟踪</option>
+
+        </select>
+      </div>
+      
+      <p style="font-size:11px;color:#667eea;margin:10px 0;line-height:1.6" data-i18n="lead_24h_notice">⏱ 提交后平台方将在24小时内与您联系，完成需求评估后安排后续服务</p>
+      <button class="lead-submit" id="sl_submit" data-i18n="lead_submit">提交需求</button>
     </div>
   </div>
 
   <!-- Tab 2: 找印尼买家 -->
   <div class="tab-content" id="tab-buyer">
     <div class="search-box">
-      <label>🔍 输入产品或需求，匹配印尼买家</label>
+      <label data-i18n="buyer_label">🔍 输入产品或需求，匹配印尼买家</label>
       <div class="search-input-wrap">
-        <input class="search-input" id="buyerInput" type="text" placeholder="e.g. welding robot, food packaging…" />
-        <button class="search-btn" id="buyerBtn">匹配</button>
+        <input class="search-input" id="buyerInput" type="text" placeholder="e.g. welding robot, food packaging…" data-i18n-placeholder="buyer_placeholder" />
+        <button class="search-btn" id="buyerBtn" data-i18n="btn_match">匹配</button>
       </div>
       <div class="hot-tags" id="buyerTags">
-        <span class="hot-tag" data-q="welding robot">welding robot</span>
-        <span class="hot-tag" data-q="food processing">food processing</span>
-        <span class="hot-tag" data-q="mining equipment">mining equipment</span>
-        <span class="hot-tag" data-q="textile machine">textile machine</span>
-        <span class="hot-tag" data-q="packaging">packaging</span>
-        <span class="hot-tag" data-q="solar panel">solar panel</span>
-        <span class="hot-tag" data-q="auto parts">auto parts</span>
-        <span class="hot-tag" data-q="electronics">electronics</span>
+        <span class="hot-tag" data-q="welding robot" data-qzh="焊接机器人" data-tagzh="welding robot" data-tagen="Welding Robot">welding robot</span>
+        <span class="hot-tag" data-q="food processing" data-qzh="食品加工" data-tagzh="food processing" data-tagen="Food Processing">food processing</span>
+        <span class="hot-tag" data-q="mining equipment" data-qzh="矿业设备" data-tagzh="mining equipment" data-tagen="Mining Equipment">mining equipment</span>
+        <span class="hot-tag" data-q="textile machine" data-qzh="纺织机械" data-tagzh="textile machine" data-tagen="Textile Machine">textile machine</span>
+        <span class="hot-tag" data-q="packaging" data-qzh="包装设备" data-tagzh="packaging" data-tagen="Packaging">packaging</span>
+        <span class="hot-tag" data-q="solar panel" data-qzh="太阳能板" data-tagzh="solar panel" data-tagen="Solar Panel">solar panel</span>
+        <span class="hot-tag" data-q="auto parts" data-qzh="汽车零部件" data-tagzh="auto parts" data-tagen="Auto Parts">auto parts</span>
+        <span class="hot-tag" data-q="electronics" data-qzh="电子产品" data-tagzh="electronics" data-tagen="Electronics">electronics</span>
       </div>
     </div>
-    <div id="buyerLoading" class="loading"><div class="spinner"></div><div class="ltext">正在检索匹配中…</div></div>
+    <div id="buyerLoading" class="loading"><div class="spinner"></div><div class="ltext" data-i18n="loading_search">正在检索匹配中…</div></div>
     <div id="buyerResults" class="results"></div>
     <div id="buyerCta" class="cta-box" style="display:none"></div>
+    <div id="buyerLead" class="lead-form">
+      <h3 data-i18n="lead_title">📋 场景需求提交 — ¥3,000 基础套餐 / 陪跑套餐可选</h3>
+      <p style="font-size:11px;color:#888;margin:6px 0 14px;line-height:1.6" data-i18n="lead_subtitle">填写需求信息后，平台方将在24小时内与您联系，提供供需诊断、匹配方案、数据库报告及后续服务</p>
+      <div style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_basic">▎基本信息</div>
+        <input class="lead-input" id="bl_co" type="text" placeholder="公司名称 *" data-i18n-placeholder="lead_company"/>
+        <input class="lead-input" id="bl_na" type="text" placeholder="您的姓名 *" data-i18n-placeholder="lead_name"/>
+        <input class="lead-input" id="bl_ph" type="tel" placeholder="手机号码 *" data-i18n-placeholder="lead_phone"/>
+        <input class="lead-input" id="bl_em" type="email" placeholder="邮箱 *" data-i18n-placeholder="lead_email"/>
+        <input class="lead-input" id="bl_wx" type="text" placeholder="微信号（与WhatsApp二选一）" data-i18n-placeholder="lead_wechat"/>
+        <input class="lead-input" id="bl_wa" type="tel" placeholder="WhatsApp号（与微信二选一）" data-i18n-placeholder="lead_whatsapp"/>
+      </div>
+      <div style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_scenario">▎场景需求</div>
+        <select class="lead-input" id="bl_scenario">
+          <option value="" data-i18n="lead_scenario_opt0">请选择应用场景 *</option>
+          <option value="smart_factory" data-i18n="lead_scenario_opt1">🏭 智能制造工厂</option>
+          <option value="warehouse_logistics" data-i18n="lead_scenario_opt2">📦 仓储物流</option>
+          <option value="elderly_care" data-i18n="lead_scenario_opt3">🧓 养老护理</option>
+          <option value="medical_rehab" data-i18n="lead_scenario_opt4">🏥 医疗康复</option>
+          <option value="education_training" data-i18n="lead_scenario_opt5">🎓 教育培训</option>
+          <option value="cultural_tourism" data-i18n="lead_scenario_opt6">🎢 文旅娱乐</option>
+          <option value="other" data-i18n="lead_scenario_opt7">其他 / 暂不确定</option>
+        </select>
+        <textarea class="lead-input" id="bl_desc" placeholder="请详细描述您的需求" data-i18n-placeholder="lead_desc" rows="4" style="resize:vertical;font-family:inherit"></textarea>
+      </div>
+      <div style="padding-bottom:8px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_budget">▎预算与合作意向</div>
+        <select class="lead-input" id="bl_budget">
+          <option value="" data-i18n="lead_budget_opt0">请选择预算范围（选填）</option>
+          <option value="under50w" data-i18n="lead_budget_opt1">50万以下</option>
+          <option value="50w_100w" data-i18n="lead_budget_opt2">50万-100万</option>
+          <option value="100w_300w" data-i18n="lead_budget_opt3">100万-300万</option>
+          <option value="300w_500w" data-i18n="lead_budget_opt4">300万-500万</option>
+          <option value="over500w" data-i18n="lead_budget_opt5">500万以上</option>
+        </select>
+        <select class="lead-input" id="bl_package">
+          <option value="" data-i18n="lead_package_opt0">请选择合作套餐 *</option>
+          <option value="basic" data-i18n="lead_package_opt1">📋 基础套餐（¥3,000）— 诊断+方案+报告+沙龙</option>
+          <option value="accompanied" data-i18n="lead_package_opt2">🚀 陪跑套餐（¥3,000+首单提成）— 含精准对接+全程跟踪</option>
+        </select>
+      </div>
+      <p style="font-size:11px;color:#667eea;margin:10px 0;line-height:1.6" data-i18n="lead_24h_notice">⏱ 提交后平台方将在24小时内与您联系，完成需求评估后安排后续服务</p>
+      <button class="lead-submit" id="bl_submit" data-i18n="lead_submit">提交需求</button>
+    </div>
   </div>
 
   <!-- Tab 3: 自由匹配 -->
   <div class="tab-content" id="tab-free">
     <div class="search-box">
-      <label>🔄 自由匹配 — 同时搜索国内供应商 + 印尼买家</label>
-      <textarea class="free-textarea" id="freeInput" placeholder="输入任何需求描述，如：&#10;• 我需要找能做焊接的机器人公司&#10;• I need warehouse robots for cold chain&#10;• 想了解东南亚食品加工设备市场"></textarea>
-      <div class="match-hint">💡 支持中英文混合输入，系统将同时匹配国内供应商和印尼买家</div>
+      <label data-i18n="free_label">🔄 自由匹配 — 同时搜索国内供应商 + 印尼买家</label>
+      <textarea class="free-textarea" id="freeInput" placeholder="输入任何需求描述，如：&#10;• 我需要找能做焊接的机器人公司&#10;• I need warehouse robots for cold chain&#10;• 想了解东南亚食品加工设备市场" data-i18n-placeholder="free_placeholder"></textarea>
+      <div class="match-hint" data-i18n="free_hint">💡 支持中英文混合输入，系统将同时匹配国内供应商和印尼买家</div>
       <div style="margin-top:10px">
-        <button class="search-btn" id="freeBtn" style="width:100%">🔍 双向匹配</button>
+        <button class="search-btn" id="freeBtn" style="width:100%" data-i18n="btn_dual_match">🔍 双向匹配</button>
       </div>
-      <div class="hot-tags" style="margin-top:10px">
-        <span class="hot-tag" data-fq="人形机器人 制造工厂">人形机器人 制造工厂</span>
-        <span class="hot-tag" data-fq="仓储物流自动化 warehouse automation">仓储物流自动化</span>
-        <span class="hot-tag" data-fq="food packaging machine 食品包装">食品包装设备</span>
-        <span class="hot-tag" data-fq="传感器 矿业 mining sensor">传感器矿业</span>
+      <div class="hot-tags" id="freeTags" style="margin-top:10px">
+        <span class="hot-tag" data-fq="人形机器人 制造工厂" data-fqen="humanoid robot manufacturing" data-fqzh="人形机器人 制造工厂" data-tagzh="人形机器人 制造工厂" data-tagen="Humanoid Robot Mfg">人形机器人 制造工厂</span>
+        <span class="hot-tag" data-fq="仓储物流自动化 warehouse automation" data-fqen="warehouse logistics automation" data-fqzh="仓储物流自动化 warehouse automation" data-tagzh="仓储物流自动化" data-tagen="Warehouse Automation">仓储物流自动化</span>
+        <span class="hot-tag" data-fq="food packaging machine 食品包装" data-fqen="food packaging machine" data-fqzh="food packaging machine 食品包装" data-tagzh="食品包装设备" data-tagen="Food Packaging">食品包装设备</span>
+        <span class="hot-tag" data-fq="传感器 矿业 mining sensor" data-fqen="sensor mining industry" data-fqzh="传感器 矿业 mining sensor" data-tagzh="传感器矿业" data-tagen="Mining Sensors">传感器矿业</span>
       </div>
     </div>
-    <div id="freeLoading" class="loading"><div class="spinner"></div><div class="ltext">双向检索匹配中…</div></div>
+    <div id="freeLoading" class="loading"><div class="spinner"></div><div class="ltext" data-i18n="loading_dual">双向检索匹配中…</div></div>
     <div id="freeResults" class="dual-results">
       <div class="dual-col">
-        <div class="dual-col-title">🇨🇳 国内供应商</div>
+        <div class="dual-col-title" data-i18n="dual_cn_title">🇨🇳 国内供应商</div>
         <div id="freeCnResults"></div>
       </div>
       <div class="dual-col">
-        <div class="dual-col-title">🇮🇩 印尼买家</div>
+        <div class="dual-col-title" data-i18n="dual_id_title">🇮🇩 印尼买家</div>
         <div id="freeIndoResults"></div>
       </div>
+    </div>
+    <div id="freeCta" class="cta-box" style="display:none"></div>
+
+    <div id="freeLead" class="lead-form">
+      <h3 data-i18n="lead_title">📋 场景需求提交 — ¥3,000 基础套餐 / 陪跑套餐可选</h3>
+      <p style="font-size:11px;color:#888;margin:6px 0 14px;line-height:1.6" data-i18n="lead_subtitle">填写需求信息后，平台方将在24小时内与您联系，提供供需诊断、匹配方案、数据库报告及后续服务</p>
+      <div style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_basic">▎基本信息</div>
+        <input class="lead-input" id="fl_co" type="text" placeholder="公司名称 *" data-i18n-placeholder="lead_company"/>
+        <input class="lead-input" id="fl_na" type="text" placeholder="您的姓名 *" data-i18n-placeholder="lead_name"/>
+        <input class="lead-input" id="fl_ph" type="tel" placeholder="手机号码 *" data-i18n-placeholder="lead_phone"/>
+        <input class="lead-input" id="fl_em" type="email" placeholder="邮箱 *" data-i18n-placeholder="lead_email"/>
+        <input class="lead-input" id="fl_wx" type="text" placeholder="微信号（与WhatsApp二选一）" data-i18n-placeholder="lead_wechat"/>
+        <input class="lead-input" id="fl_wa" type="tel" placeholder="WhatsApp号（与微信二选一）" data-i18n-placeholder="lead_whatsapp"/>
+      </div>
+      <div style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_scenario">▎场景需求</div>
+        <select class="lead-input" id="fl_scenario">
+          <option value="" data-i18n="lead_scenario_opt0">请选择应用场景 *</option>
+          <option value="smart_factory" data-i18n="lead_scenario_opt1">🏭 智能制造工厂</option>
+          <option value="warehouse_logistics" data-i18n="lead_scenario_opt2">📦 仓储物流</option>
+          <option value="elderly_care" data-i18n="lead_scenario_opt3">🧓 养老护理</option>
+          <option value="medical_rehab" data-i18n="lead_scenario_opt4">🏥 医疗康复</option>
+          <option value="education_training" data-i18n="lead_scenario_opt5">🎓 教育培训</option>
+          <option value="cultural_tourism" data-i18n="lead_scenario_opt6">🎢 文旅娱乐</option>
+          <option value="other" data-i18n="lead_scenario_opt7">其他 / 暂不确定</option>
+        </select>
+        <textarea class="lead-input" id="fl_desc" placeholder="请详细描述您的需求" data-i18n-placeholder="lead_desc" rows="4" style="resize:vertical;font-family:inherit"></textarea>
+      </div>
+      <div style="padding-bottom:8px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_budget">▎预算与合作意向</div>
+        <select class="lead-input" id="fl_budget">
+          <option value="" data-i18n="lead_budget_opt0">请选择预算范围（选填）</option>
+          <option value="under50w" data-i18n="lead_budget_opt1">50万以下</option>
+          <option value="50w_100w" data-i18n="lead_budget_opt2">50万-100万</option>
+          <option value="100w_300w" data-i18n="lead_budget_opt3">100万-300万</option>
+          <option value="300w_500w" data-i18n="lead_budget_opt4">300万-500万</option>
+          <option value="over500w" data-i18n="lead_budget_opt5">500万以上</option>
+        </select>
+        <select class="lead-input" id="fl_package">
+          <option value="" data-i18n="lead_package_opt0">请选择合作套餐 *</option>
+          <option value="basic" data-i18n="lead_package_opt1">📋 基础套餐（¥3,000）— 诊断+方案+报告+沙龙</option>
+          <option value="accompanied" data-i18n="lead_package_opt2">🚀 陪跑套餐（¥3,000+首单提成）— 含精准对接+全程跟踪</option>
+        </select>
+      </div>
+      <p style="font-size:11px;color:#667eea;margin:10px 0;line-height:1.6" data-i18n="lead_24h_notice">⏱ 提交后平台方将在24小时内与您联系，完成需求评估后安排后续服务</p>
+      <button class="lead-submit" id="fl_submit" data-i18n="lead_submit">提交需求</button>
     </div>
   </div>
 
   <!-- Tab 4: 场景搜索 -->
   <div class="tab-content" id="tab-scenario">
     <div class="search-box" style="padding-bottom:8px">
-      <label>🎯 场景搜索 — 选择应用行业，获取解决方案</label>
-      <div class="scenario-scroll" id="scenarioScroll"></div>
+      <label data-i18n="scenario_label">🎯 场景搜索 — 选择应用行业，获取解决方案</label>
+      <div class="scroll-wrap"><div class="scenario-scroll" id="scenarioScroll"></div><div class="scroll-fade-right"></div></div>
+      <div class="scroll-hint" data-i18n="swipe_hint_scenario">← 左右滑动，查看更多场景 →</div>
     </div>
     <div class="scenario-detail" id="scenarioDetail"></div>
 
+
+    <!-- 场景服务套餐 -->
+    <div style="background:rgba(30,28,50,0.8);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:20px;margin-top:16px">
+      <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:12px" data-i18n="sc_svc_title">💡 场景落地服务</div>
+      
+      <div style="background:rgba(102,126,234,0.08);border:1px solid rgba(102,126,234,0.2);border-radius:10px;padding:12px;margin-bottom:8px">
+        <div style="font-size:13px;font-weight:600;color:#667eea;margin-bottom:4px" data-i18n="sc_svc_plan_title">📋 场景方案 + 预算规划</div>
+        <div style="font-size:15px;font-weight:700;color:#fff;margin-bottom:6px" data-i18n="sc_svc_plan_price">¥3,000</div>
+        <div style="font-size:11px;color:#ccc;line-height:1.7" data-i18n="sc_svc_plan_desc">✅ 场景方案梳理 — 明确需求、产品选型、技术路线
+✅ 预算规划 — 项目预算、投资回报分析</div>
+      </div>
+      
+      <div style="background:rgba(255,215,0,0.06);border:1px solid rgba(255,215,0,0.2);border-radius:10px;padding:12px;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:600;color:#ffd700;margin-bottom:4px" data-i18n="sc_svc_exec_title">🤝 场景测试 + 集成交付</div>
+        <div style="font-size:12px;font-weight:600;color:#fff;margin-bottom:6px" data-i18n="sc_svc_exec_price">签订合同，费用另议</div>
+        <div style="font-size:11px;color:#ccc;line-height:1.7" data-i18n="sc_svc_exec_desc">✅ 场景测试验证 — 实地POC测试、效果验证
+✅ 集成交付落地 — 作为集成商协调各方确保项目交付
+✅ 售后运维支持 — 持续技术支持与运维保障</div>
+      </div>
+      
+      <button class="scenario-action-btn" id="sc_svc_btn" data-i18n="sc_svc_btn">📝 提交场景需求</button>
+    </div>
+    
+    <!-- 场景需求表单 -->
+    <div id="scenarioLead" class="lead-form">
+      <h3 data-i18n="sc_lead_title">📋 场景需求提交</h3>
+      <p style="font-size:11px;color:#888;margin:6px 0 14px;line-height:1.6" data-i18n="sc_lead_subtitle">填写场景需求信息，我们将提供方案梳理、预算规划及集成交付服务</p>
+      <div style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_basic">▎基本信息</div>
+        <input class="lead-input" id="scl_co" type="text" placeholder="公司名称 *" data-i18n-placeholder="lead_company"/>
+        <input class="lead-input" id="scl_na" type="text" placeholder="您的姓名 *" data-i18n-placeholder="lead_name"/>
+        <input class="lead-input" id="scl_ph" type="tel" placeholder="手机号码 *" data-i18n-placeholder="lead_phone"/>
+        <input class="lead-input" id="scl_em" type="email" placeholder="邮箱 *" data-i18n-placeholder="lead_email"/>
+        <input class="lead-input" id="scl_wx" type="text" placeholder="微信号（与WhatsApp二选一）" data-i18n-placeholder="lead_wechat"/>
+        <input class="lead-input" id="scl_wa" type="tel" placeholder="WhatsApp号（与微信二选一）" data-i18n-placeholder="lead_whatsapp"/>
+      </div>
+      <div style="border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:12px;margin-bottom:12px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_scenario">▎场景需求</div>
+        <select class="lead-input" id="scl_scenario">
+          <option value="" data-i18n="lead_scenario_opt0">请选择应用场景 *</option>
+          <option value="smart_factory" data-i18n="lead_scenario_opt1">🏭 智能制造工厂</option>
+          <option value="warehouse_logistics" data-i18n="lead_scenario_opt2">📦 仓储物流</option>
+          <option value="elderly_care" data-i18n="lead_scenario_opt3">🧓 养老护理</option>
+          <option value="medical_rehab" data-i18n="lead_scenario_opt4">🏥 医疗康复</option>
+          <option value="education_training" data-i18n="lead_scenario_opt5">🎓 教育培训</option>
+          <option value="cultural_tourism" data-i18n="lead_scenario_opt6">🎢 文旅娱乐</option>
+          <option value="other" data-i18n="lead_scenario_opt7">其他 / 暂不确定</option>
+        </select>
+        <textarea class="lead-input" id="scl_desc" placeholder="请描述您的场景需求：&#10;• 当前业务痛点与目标&#10;• 期望的机器人/设备类型&#10;• 预算范围与交付周期&#10;• 是否需要POC测试" data-i18n-placeholder="sc_lead_desc" rows="5" style="resize:vertical;font-family:inherit"></textarea>
+      </div>
+      <div style="padding-bottom:8px">
+        <div style="font-size:12px;color:#667eea;font-weight:600;margin-bottom:10px" data-i18n="lead_section_budget">▎预算与合作意向</div>
+        <select class="lead-input" id="scl_budget">
+          <option value="" data-i18n="lead_budget_opt0">请选择预算范围（选填）</option>
+          <option value="under50w" data-i18n="lead_budget_opt1">50万以下</option>
+          <option value="50w_100w" data-i18n="lead_budget_opt2">50万-100万</option>
+          <option value="100w_300w" data-i18n="lead_budget_opt3">100万-300万</option>
+          <option value="300w_500w" data-i18n="lead_budget_opt4">300万-500万</option>
+          <option value="over500w" data-i18n="lead_budget_opt5">500万以上</option>
+        </select>
+        <select class="lead-input" id="scl_package">
+          <option value="" data-i18n="sc_lead_pkg_opt0">请选择服务类型 *</option>
+          <option value="scenario_plan" data-i18n="sc_lead_pkg_opt1">📋 场景方案+预算规划（¥3,000）</option>
+          <option value="scenario_exec" data-i18n="sc_lead_pkg_opt2">🤝 场景测试+集成交付（签合同另议）</option>
+        </select>
+      </div>
+      <p style="font-size:11px;color:#667eea;margin:10px 0;line-height:1.6" data-i18n="lead_24h_notice">⏱ 提交后平台方将在24小时内与您联系，完成需求评估后安排后续服务</p>
+      <button class="lead-submit" id="scl_submit" data-i18n="lead_submit">提交需求</button>
+    </div>
+
     <div class="top-section" id="topSection">
-      <div class="top-section-title">🏆 具身智能头部企业</div>
+      <div class="top-section-title" data-i18n="top_title">🏆 具身智能头部企业</div>
       <div class="top-cat-tabs" id="topCatTabs"></div>
       <div class="top-company-list" id="topCompanyList"></div>
 
       <div style="margin-top:18px">
-        <div class="top-section-title">⭐ 核心产品速览</div>
-        <div class="featured-scroll" id="featuredScroll"></div>
+        <div class="top-section-title" data-i18n="featured_title">⭐ 核心产品速览</div>
+        <div class="scroll-wrap"><div class="featured-scroll" id="featuredScroll"></div><div class="scroll-fade-right"></div></div>
+        <div class="scroll-hint" data-i18n="swipe_hint">← 左右滑动，查看更多产品 →</div>
       </div>
     </div>
   </div>
@@ -276,15 +504,365 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 </div>
 
 <div class="footer">
-  友吉智汇 · S&D印尼出海匹配体系<br/>
-  专注中国-印尼具身智能跨境撮合<br/>
-  数据仅供参考 · 具体以实际对接为准
+  <span data-i18n="footer_line1">具身智能出海匹配平台</span><br/>
+  <span data-i18n="footer_line2">专注中国-印尼具身智能跨境撮合</span><br/>
+  <span data-i18n="footer_line3">数据仅供参考 · 具体以实际对接为准</span><br/>
+  <span style="font-size:10px;color:#555">html © 2026 敢先体韵（上海）文化发展有限公司 版权所有</span>
 </div>
 
 <script>
 (function() {
   'use strict';
+  /* ========== Internationalization (i18n) ========== */
+  var currentLang = localStorage.getItem('sd_lang') || 'zh';
 
+  var I18N = {
+    // Header
+    'site_title': { zh: '具身智能出海匹配', en: 'Embodied AI Cross-border Matching' },
+    'header_title': { zh: '具身智能出海匹配', en: 'Embodied AI Cross-border Matching' },
+    'header_sub': { zh: '具身智能双向供需匹配平台', en: 'Embodied AI Bidirectional Matching Platform' },
+    'header_brand': { zh: 'Embodied AI Sourcing Platform', en: 'Embodied AI Sourcing Platform' },
+    // Stats
+    'stat_indo': { zh: '印尼企业', en: 'Indonesian Companies' },
+    'stat_cn': { zh: '国内供应商', en: 'CN Suppliers' },
+    'stat_scenario': { zh: '应用场景', en: 'Scenarios' },
+    'stat_top': { zh: '头部企业', en: 'Top Companies' },
+    // Tabs
+    'tab_supplier': { zh: '找国内供应商', en: 'Find CN Suppliers' },
+    'tab_buyer': { zh: '找印尼买家', en: 'Find ID Buyers' },
+    'tab_free': { zh: '自由匹配', en: 'Free Match' },
+    'tab_scenario': { zh: '场景搜索', en: 'Scenario Search' },
+    // Tab 1: Supplier
+    'supplier_label': { zh: '🔍 输入产品或需求，匹配国内供应商', en: '🔍 Enter product or need, match CN suppliers' },
+    'supplier_placeholder': { zh: '如：3D视觉传感器、协作机器人…', en: 'e.g. 3D vision sensor, collaborative robot…' },
+    'btn_match': { zh: '匹配', en: 'Match' },
+    // Tab 2: Buyer
+    'buyer_label': { zh: '🔍 输入产品或需求，匹配印尼买家', en: '🔍 Enter product or need, match ID buyers' },
+    'buyer_placeholder': { zh: 'e.g. welding robot, food packaging…', en: 'e.g. welding robot, food packaging…' },
+    // Tab 3: Free match
+    'free_label': { zh: '🔄 自由匹配 — 同时搜索国内供应商 + 印尼买家', en: '🔄 Free Match — Search CN suppliers + ID buyers simultaneously' },
+    'free_placeholder': { zh: '输入任何需求描述，如：\n• 我需要找能做焊接的机器人公司\n• I need warehouse robots for cold chain\n• 想了解东南亚食品加工设备市场', en: 'Enter any requirement description, e.g.:\n• I need robot companies that can weld\n• I need warehouse robots for cold chain\n• Want to know about SE Asia food processing equipment market' },
+    'free_hint': { zh: '💡 支持中英文混合输入，系统将同时匹配国内供应商和印尼买家', en: '💡 Supports mixed CN/EN input, system matches CN suppliers and ID buyers simultaneously' },
+    'btn_dual_match': { zh: '🔍 双向匹配', en: '🔍 Bidirectional Match' },
+    'dual_cn_title': { zh: '🇨🇳 国内供应商', en: '🇨🇳 CN Suppliers' },
+    'dual_id_title': { zh: '🇮🇩 印尼买家', en: '🇮🇩 ID Buyers' },
+    // Tab 4: Scenario
+    'scenario_label': { zh: '🎯 场景搜索 — 选择应用行业，获取解决方案', en: '🎯 Scenario Search — Select industry, get solutions' },
+    'top_title': { zh: '🏆 具身智能头部企业', en: '🏆 Top Embodied AI Companies' },
+    'featured_title': { zh: '⭐ 核心产品速览', en: '⭐ Featured Products' },
+    'swipe_hint': { zh: '← 左右滑动，查看更多产品 →', en: '← Swipe for more products →' },
+    'swipe_hint_scenario': { zh: '← 左右滑动，查看更多场景 →', en: '← Swipe for more scenarios →' },
+    // Footer
+    'footer_line1': { zh: '具身智能出海匹配平台', en: 'Embodied AI Matching Platform' },
+    'footer_line2': { zh: '专注中国-印尼具身智能跨境撮合', en: 'Focusing on China-Indonesia Embodied AI Cross-border Matching' },
+    'footer_line3': { zh: '数据仅供参考 · 具体以实际对接为准', en: 'Data for reference only · Subject to actual confirmation' },
+    // Lead form
+    'lead_title': { zh: '📋 提交需求 — 解锁完整匹配信息', en: '📋 Submit Requirements — Unlock Full Info' },
+    'lead_company': { zh: '公司名称 *', en: 'Company Name *' },
+    'lead_name': { zh: '您的姓名 *', en: 'Your Name *' },
+    'lead_phone': { zh: '手机号码 *', en: 'Phone *' },
+    'lead_email': { zh: '邮箱 *', en: 'Email *' },
+    'lead_wechat': { zh: '微信号（与WhatsApp二选一）', en: 'WeChat (or WhatsApp)' },
+    'lead_whatsapp': { zh: 'WhatsApp号（与微信二选一）', en: 'WhatsApp (or WeChat)' },
+    'alert_wechat_or_whatsapp': { zh: '请至少填写微信号或WhatsApp号中的一项', en: 'Please fill in at least WeChat or WhatsApp' },
+    'lead_scenario': { zh: '请选择应用场景（选填）', en: 'Select scenario (optional)' },
+    'lead_scenario_opt0': { zh: '请选择应用场景 *', en: 'Select scenario *' },
+    'lead_scenario_opt1': { zh: '智能制造工厂', en: 'Smart Factory' },
+    'lead_scenario_opt2': { zh: '仓储物流', en: 'Warehouse & Logistics' },
+    'lead_scenario_opt3': { zh: '养老护理', en: 'Elderly Care' },
+    'lead_scenario_opt4': { zh: '医疗康复', en: 'Medical Rehab' },
+    'lead_scenario_opt5': { zh: '教育培训', en: 'Education & Training' },
+    'lead_scenario_opt6': { zh: '文旅娱乐', en: 'Cultural Tourism & Entertainment' },
+    'lead_scenario_opt7': { zh: '其他 / 暂不确定', en: 'Other / Not sure yet' },
+    'lead_budget': { zh: '请选择预算范围（选填）', en: 'Select budget range (optional)' },
+    'lead_budget_opt0': { zh: '请选择预算范围（选填）', en: 'Select budget range (optional)' },
+    'lead_budget_opt1': { zh: '50万以下', en: 'Under 500K' },
+    'lead_budget_opt2': { zh: '50万-100万', en: '500K-1M' },
+    'lead_budget_opt3': { zh: '100万-300万', en: '1M-3M' },
+    'lead_budget_opt4': { zh: '300万-500万', en: '3M-5M' },
+    'lead_budget_opt5': { zh: '500万以上', en: 'Over 5M' },
+    'lead_package': { zh: '请选择合作套餐 *', en: 'Select cooperation package *' },
+    'lead_package_opt0': { zh: '请选择合作套餐 *', en: 'Select cooperation package *' },
+    'lead_package_opt1': { zh: '📋 基础套餐（¥3,000）— 诊断+方案+报告+沙龙', en: '📋 Basic (¥3,000) — Diagnosis + Plan + Report + Salon' },
+    'lead_package_opt2': { zh: '🚀 陪跑套餐（¥3,000+首单提成）— 含精准对接+全程跟踪', en: '🚀 Accompanied (¥3,000+commission) — Precise matchmaking + full tracking' },
+    'lead_package_opt3': { zh: '🤝 集成执行（签合同另议）— 方案梳理+预算规划+测试交付', en: '🤝 Integration (contract) — Solution planning + budget + delivery' },
+    'lead_section_basic': { zh: '▎基本信息', en: '▎ Basic Info' },
+    'lead_section_scenario': { zh: '▎场景需求', en: '▎ Scenario Requirements' },
+    'lead_section_budget': { zh: '▎预算与合作意向', en: '▎ Budget & Cooperation' },
+    'lead_desc': { zh: '请详细描述您的需求，例如：\\n• 应用场景的具体情况（行业/规模/当前痛点）\\n• 需要什么样的机器人/设备\\n• 期望达成的效果\\n• 期望的交付周期', en: 'Please describe your needs in detail:\\n• Application scenario (industry/scale/pain points)\\n• What robot/equipment do you need\\n• Expected outcome\\n• Expected delivery timeline' },
+    'lead_subtitle': { zh: '填写需求信息后，平台方将在24小时内与您联系，提供供需诊断、匹配方案、数据库报告及后续服务', en: 'Fill in your requirements. We will contact you within 24h for diagnosis, matching plan, database report and follow-up services' },
+    'lead_desc': { zh: '请详细描述您的需求，如：\n• 需要什么样的机器人/设备？\n• 应用场景是什么？\n• 当前痛点是什么？\n• 期望的交付周期？', en: 'Describe your needs in detail:\n• What robot/equipment do you need?\n• What is the application scenario?\n• What are your pain points?\n• Expected delivery timeline?' },
+    'lead_24h_notice': { zh: '⏱ 提交后平台方将在24小时内与您联系，完成需求评估后安排后续服务', en: '⏱ We will contact you within 24h to assess your needs and arrange next steps' },
+    'lead_submit': { zh: '提交需求', en: 'Submit Requirements' },
+    'lead_submit_sending': { zh: '提交中...', en: 'Submitting...' },
+    'lead_submit_done': { zh: '✅ 已提交，24小时内与您联系', en: '✅ Submitted, we will contact you within 24h' },
+    // Payment modal
+    'modal_title': { zh: '商机匹配服务套餐', en: 'Service Packages' },
+    'modal_pkg1_title': { zh: '📋 基础套餐', en: '📋 Basic Package' },
+    'modal_pkg1_price': { zh: '¥3,000', en: '¥3,000' },
+    'modal_pkg1_1': { zh: '✅ 供需诊断 — 分析您的行业、产品与目标市场匹配度', en: '✅ Supply-Demand Diagnosis - Industry, product & market fit analysis' },
+    'modal_pkg1_2': { zh: '✅ 匹配方案 — 定制专属供应商/买家对接方案', en: '✅ Matching Plan - Custom supplier/buyer matching plan' },
+    'modal_pkg1_3': { zh: '✅ 完整数据库报告 — 含联系方式、采购历史、HS关税分析', en: '✅ Full Database Report - Contacts, purchase history, HS tariff analysis' },
+    'modal_pkg1_4': { zh: '✅ 线下沙龙参与 — 受邀参加具身智能产业对接沙龙（1次）', en: '✅ Salon Participation - Invited to Embodied AI Industry Salon (1x)' },
+    'modal_pkg2_title': { zh: '🚀 陪跑套餐', en: '🚀 Accompanied Package' },
+    'modal_pkg2_price': { zh: '基础¥3,000 + 首单提成', en: 'Basic ¥3,000 + 1st Order Commission' },
+    'modal_pkg2_note': { zh: '含基础套餐全部内容，另加：', en: 'Includes all Basic Package, plus:' },
+    'modal_pkg2_1': { zh: '✅ 精准对接 — 一对一介绍供需双方关键决策人', en: '✅ Precise Matchmaking - 1-on-1 intro to key decision makers' },
+    'modal_pkg2_2': { zh: '✅ 全程陪跑跟踪服务 — 持续跟进合作进展直至落地', en: '✅ Full Accompaniment - Follow-up until project lands' },
+    'modal_pkg3_title': { zh: '🤝 集成执行', en: '🤝 Integration & Execution' },
+    'modal_pkg3_price': { zh: '签订合同，费用另议', en: 'Contract Required, Price Negotiable' },
+    'modal_pkg3_note': { zh: '作为中立集成商，协调各方：', en: 'As neutral integrator, coordinating all parties:' },
+    'modal_pkg3_1': { zh: '✅ 方案梳理 — 明确需求、产品选型与技术路线', en: '✅ Solution Planning - Requirements clarification, product selection & tech roadmap' },
+    'modal_pkg3_2': { zh: '✅ 预算规划 — 制定项目预算与投资回报分析', en: '✅ Budget Planning - Project budget & ROI analysis' },
+    'modal_pkg3_3': { zh: '✅ 测试交付 — 集成交付商，确保项目落地', en: '✅ Testing & Delivery - As integrator, ensuring project delivery' },
+    'modal_24h_notice': { zh: '⏱ 提交需求后，平台方将在24小时内与您联系', en: '⏱ We will contact you within 24h after submission' },
+    'modal_contact_btn': { zh: '📧 联系我们', en: '📧 Contact Us' },
+    // Scenario service
+    'sc_svc_title': { zh: '💡 场景落地服务', en: '💡 Scenario Implementation Services' },
+    'sc_svc_plan_title': { zh: '📋 场景方案 + 预算规划', en: '📋 Scenario Plan + Budget Planning' },
+    'sc_svc_plan_price': { zh: '¥3,000', en: '¥3,000' },
+    'sc_svc_plan_desc': { zh: '✅ 场景方案梳理 — 明确需求、产品选型、技术路线\n✅ 预算规划 — 项目预算、投资回报分析', en: '✅ Scenario Planning — Requirements, product selection, tech roadmap\n✅ Budget Planning — Project budget, ROI analysis' },
+    'sc_svc_exec_title': { zh: '🤝 场景测试 + 集成交付', en: '🤝 Scenario Testing + Integration Delivery' },
+    'sc_svc_exec_price': { zh: '签订合同，费用另议', en: 'Contract Required, Price Negotiable' },
+    'sc_svc_exec_desc': { zh: '✅ 场景测试验证 — 实地POC测试、效果验证\n✅ 集成交付落地 — 作为集成商协调各方确保项目交付\n✅ 售后运维支持 — 持续技术支持与运维保障', en: '✅ Scenario Testing — On-site POC test, effect verification\n✅ Integration Delivery — As integrator ensuring project delivery\n�️ After-sales Support — Ongoing tech support & maintenance' },
+    'sc_svc_btn': { zh: '📝 提交场景需求', en: '📝 Submit Scenario Requirements' },
+    'sc_lead_title': { zh: '📋 场景需求提交', en: '📋 Scenario Requirements Submission' },
+    'sc_lead_subtitle': { zh: '填写场景需求信息，我们将提供方案梳理、预算规划及集成交付服务', en: 'Fill in your scenario needs. We provide solution planning, budget planning and integration delivery' },
+    'sc_lead_desc': { zh: '请描述您的场景需求：\n• 当前业务痛点与目标\n• 期望的机器人/设备类型\n• 预算范围与交付周期\n• 是否需要POC测试', en: 'Describe your scenario needs:\n• Current pain points & goals\n• Expected robot/equipment type\n• Budget range & delivery timeline\n• Need POC testing?' },
+    'sc_lead_pkg_opt0': { zh: '请选择服务类型 *', en: 'Select service type *' },
+    'sc_lead_pkg_opt1': { zh: '📋 场景方案+预算规划（¥3,000）', en: '📋 Scenario Plan + Budget (¥3,000)' },
+    'sc_lead_pkg_opt2': { zh: '🤝 场景测试+集成交付（签合同另议）', en: '🤝 Testing + Integration (contract)' },
+    // Dynamic: Supplier results
+    'found_suppliers': { zh: '找到', en: 'Found' },
+    'suppliers_unit': { zh: '家供应商', en: 'suppliers' },
+    'high_conf': { zh: '家中高置信度', en: 'high/med confidence' },
+    'no_supplier_match': { zh: '暂未找到匹配供应商', en: 'No matching suppliers found' },
+    'try_other_kw': { zh: '请尝试其他关键词', en: 'Please try different keywords' },
+    'confidence': { zh: '置信度', en: 'Confidence' },
+    'category': { zh: '分类', en: 'Category' },
+    'capital': { zh: '资本', en: 'Capital' },
+    'products': { zh: '产品', en: 'Products' },
+    'match_score': { zh: '匹配度', en: 'Match' },
+    'hits': { zh: '命中', en: 'hits' },
+    'more_unlock': { zh: '家待解锁…', en: 'more to unlock…' },
+    'no_match': { zh: '暂无匹配', en: 'No matches' },
+    'realtime_match': { zh: '实时匹配', en: 'Real-time match' },
+    // Dynamic: Buyer results
+    'found_companies': { zh: '找到', en: 'Found' },
+    'companies_unit': { zh: '家企业', en: 'companies' },
+    'no_buyer_match': { zh: '暂无匹配买家', en: 'No matching buyers found' },
+    'scale': { zh: '规模', en: 'Scale' },
+    'revenue': { zh: '营收', en: 'Revenue' },
+    'industry': { zh: '行业', en: 'Industry' },
+    'business': { zh: '业务', en: 'Business' },
+    // Dynamic: CTA boxes
+    'cta_supplier_title': { zh: '💡 选择服务套餐，解锁完整匹配信息', en: '💡 Select a package to unlock full matching info' },
+    'cta_supplier_desc_1': { zh: '基本套餐¥3,000起：供需诊断+匹配方案+完整报告+沙龙参与', en: 'Basic ¥3,000+: Diagnosis + Plan + Full Report + Salon' },
+    'cta_supplier_desc_2': { zh: '陪跑套餐另加：精准对接+全程陪跑跟踪', en: 'Accompanied adds: Precise matchmaking + full tracking' },
+    'cta_supplier_desc_3': { zh: '提交有效信息后解锁剩余屏蔽信息', en: 'Submit valid info to unlock remaining masked data' },
+    'cta_supplier_btn': { zh: '提交需求，解锁完整信息', en: 'Submit & Unlock Full Info' },
+    'cta_buyer_buyers': { zh: '家买家', en: 'buyers' },
+    'cta_buyer_desc': { zh: '基本套餐¥3,000起：供需诊断+匹配方案+完整报告+沙龙参与', en: 'Basic ¥3,000+: Diagnosis + Plan + Full Report + Salon' },
+    'cta_buyer_btn': { zh: '提交需求，解锁完整信息', en: 'Submit & Unlock Full Info' },
+    // Dynamic: Loading
+    'loading_search': { zh: '正在检索匹配中…', en: 'Searching & matching…' },
+    'loading_dual': { zh: '双向检索匹配中…', en: 'Bidirectional search & matching…' },
+    'loading_cn': { zh: '⏳ 国内数据加载中，请稍候重试…', en: '⏳ CN data loading, please retry…' },
+    'loading_id': { zh: '⏳ 印尼数据加载中，请稍候重试…', en: '⏳ ID data loading, please retry…' },
+    // Dynamic: Alerts
+    'alert_enter_kw': { zh: '请输入产品或需求关键词', en: 'Please enter product or need keywords' },
+    'alert_cn_loading': { zh: '国内数据正在加载中，请稍候再点击匹配…', en: 'CN data is loading, please wait and try again…' },
+    'alert_cn_init': { zh: '国内数据初始化中，请稍候再试…', en: 'CN data initializing, please wait…' },
+    'alert_id_loading': { zh: '印尼企业数据正在加载中，请稍候再试…', en: 'ID data is loading, please wait and try again…' },
+    'alert_id_init': { zh: '印尼企业数据正在加载，请稍候再点击匹配…', en: 'ID data is loading, please wait and try again…' },
+    'alert_enter_desc': { zh: '请输入需求描述', en: 'Please enter a requirement description' },
+    'alert_data_loading': { zh: '数据正在加载中，请稍候再试…', en: 'Data is loading, please wait…' },
+    'alert_fill_required': { zh: '请填写公司名称、姓名和联系方式', en: 'Please fill in company name, name and contact info' },
+    'alert_submit_fail': { zh: '提交失败，请重试或直接联系：your-wechat-id', en: 'Submit failed, please retry or contact us directly' },
+    'alert_network_error': { zh: '网络错误，请重试或添加微信联系', en: 'Network error, please retry or contact via WeChat' },
+    'alert_timeout': { zh: '提交超时，请检查网络后重试', en: 'Submit timeout, please check network and retry' },
+    'alert_en_kw': { zh: 'Please enter keywords', en: 'Please enter keywords' },
+    'retry': { zh: '重试', en: 'Retry' },
+    // Dynamic: Free match CTA
+    'cta_free_title': { zh: '💡 选择服务套餐，解锁完整匹配信息', en: '💡 Select a package to unlock full matching info' },
+    'cta_free_desc': { zh: '基本套餐¥3,000起：供需诊断+匹配方案+完整报告+沙龙参与', en: 'Basic ¥3,000+: Diagnosis + Plan + Full Report + Salon' },
+    'cta_free_btn': { zh: '提交需求，解锁完整信息', en: 'Submit & Unlock Full Info' },
+    // Dynamic: Scenario detail
+    'sd_tech': { zh: '🔧 适用技术', en: '🔧 Applicable Technologies' },
+    'sd_equip': { zh: '🤖 推荐设备', en: '🤖 Recommended Equipment' },
+    'sd_companies': { zh: '🏢 推荐企业（点击搜索匹配）', en: '🏢 Recommended Companies (click to search)' },
+    'sd_cases': { zh: '📋 案例预设', en: '📋 Case Presets' },
+    'sd_search_btn': { zh: '🔍 查找该场景匹配供应商', en: '🔍 Find matched suppliers for this scenario' },
+    // Success message
+    'success_msg': { zh: '提交成功！具身智能产业专家将核实信息后联系您。', en: 'Submitted! Our embodied AI expert will verify your info and contact you shortly.' },
+    'success_company': { zh: '公司：', en: 'Company: ' },
+    'success_name': { zh: '姓名：', en: 'Name: ' },
+    'success_contact': { zh: '联系方式：', en: 'Contact: ' },
+    // Top company categories
+    'top_cat_body': { zh: '机器人本体', en: 'Robot Body' },
+    'top_cat_perception': { zh: '感知系统', en: 'Perception System' },
+    'top_cat_actuation': { zh: '执行系统', en: 'Actuation System' },
+    // Scenario descriptions (English)
+    'scenario_desc_smart_factory': { zh: '', en: 'Embodied AI empowers manufacturing transformation, enabling flexible production, quality inspection, and smart logistics automation throughout the process...' },
+    'scenario_desc_warehouse_logistics': { zh: '', en: 'End-to-end automation from inbound, sorting, handling to outbound, solving labor shortage and efficiency bottlenecks in logistics...' },
+    'scenario_desc_elderly_care': { zh: '', en: 'Embodied AI alleviates elderly care labor shortage, providing companionship, rehabilitation, and daily living assistance...' },
+    'scenario_desc_medical_rehab': { zh: '', en: 'Surgical robots, rehabilitation equipment, and medical assistance to improve precision and recovery outcomes...' },
+    'scenario_desc_education_training': { zh: '', en: 'Robots in classrooms, training platforms, programming education to cultivate next-gen embodied AI talent...' },
+    // Scenario techs (English)
+    'scenario_tech_smart_factory': { zh: [], en: ['Vision Perception & 3D Reconstruction', 'Force-Compliant Control', 'Autonomous Navigation SLAM', 'Digital Twin', 'Multi-Robot Coordination', 'AI Quality Inspection'] },
+    'scenario_tech_warehouse_logistics': { zh: [], en: ['Autonomous Navigation & Path Planning', 'Multi-Robot Scheduling', 'Vision Recognition & Sorting', 'Digital Twin Warehouse', 'Smart Warehouse Management'] },
+    'scenario_tech_elderly_care': { zh: [], en: ['Affective Computing & Interaction', 'Human Pose Recognition', 'Force-Controlled Safe Interaction', 'Voice Multimodal Interaction', 'Health Monitoring Sensors'] },
+    'scenario_tech_medical_rehab': { zh: [], en: ['High-Precision Motion Control', 'Force-Feedback Teleoperation', 'Medical Imaging Fusion', 'Soft Force Control', 'AI-Assisted Diagnosis'] },
+    'scenario_tech_education_training': { zh: [], en: ['Visual Programming', 'Simulation Training Platform', 'Multi-Robot Formation Teaching', 'AI Interactive Teaching', 'Virtual-Real Integrated Training'] },
+    // Scenario equipments (English)
+    'scenario_equip_smart_factory': { zh: [], en: [
+      {name:'Industrial Collaborative Robot', desc:'6/7-axis cobot, force-controlled assembly, welding, painting'},
+      {name:'AGV/AMR Logistics Robot', desc:'Autonomous mobile robot, factory material handling & delivery'},
+      {name:'3D Vision Inspection System', desc:'Structured light/ToF sensor, online product quality inspection'},
+      {name:'Humanoid Robot', desc:'General-purpose humanoid robot, flexible multi-task production line'}
+    ]},
+    'scenario_equip_warehouse_logistics': { zh: [], en: [
+      {name:'AMR Autonomous Mobile Robot', desc:'Laser SLAM navigation, 50-1000kg payload, 24/7 unattended'},
+      {name:'Unmanned Forklift', desc:'Auto pallet loading/unloading, compatible with various racks'},
+      {name:'Sorting Robot', desc:'High-speed vision sorting, 3000-6000 items/hour'},
+      {name:'Warehouse Drone', desc:'High-rack inventory counting & inspection'}
+    ]},
+    'scenario_equip_elderly_care': { zh: [], en: [
+      {name:'Companion Robot', desc:'Emotional interaction, voice chat, health monitoring, medication reminder'},
+      {name:'Nursing Assist Robot', desc:'Assist standing, transfer, turning, max load 120kg'},
+      {name:'Rehabilitation Training Robot', desc:'Upper/lower limb rehab training, force-compliant safety'},
+      {name:'Exoskeleton Robot', desc:'Walking assistance, reducing caregiver back strain'}
+    ]},
+    'scenario_equip_medical_rehab': { zh: [], en: [
+      {name:'Surgical Robot', desc:'Master-slave operation, sub-mm precision, 3D HD vision'},
+      {name:'Rehab Exoskeleton', desc:'Lower/upper limb rehab training, adaptive force control'},
+      {name:'Medical Delivery Robot', desc:'In-hospital medicine & specimen auto delivery'},
+      {name:'Disinfection Robot', desc:'UV+atomization dual disinfection, auto navigation covering all departments'}
+    ]},
+    'scenario_equip_education_training': { zh: [], en: [
+      {name:'Educational Humanoid Robot', desc:'Open-source platform, Python/Scratch, K12 to university'},
+      {name:'Quadruped Robot Dog', desc:'Motion control teaching platform, reinforcement learning experiments'},
+      {name:'Cobot Teaching Kit', desc:'6-axis cobot + vision kit, industrial robot training'},
+      {name:'Simulation Training Platform', desc:'Isaac Sim/MuJoCo, large-scale virtual environment training'}
+    ]},
+    // Scenario cases (English)
+    'scenario_case_smart_factory': { zh: [], en: [
+      {title:'Auto Parts Factory Flexible Line Upgrade', desc:'Deployed 6 cobots + AGV system, mixed-line production, 35% efficiency gain, 40% labor cost reduction'},
+      {title:'3C Electronics Smart Factory', desc:'Vision-guided + force-controlled assembly, yield from 92% to 99.5%, line changeover time reduced 60%'}
+    ]},
+    'scenario_case_warehouse_logistics': { zh: [], en: [
+      {title:'SE Asia E-commerce Warehouse Automation', desc:'Deployed 200+ AMRs, daily orders from 50K to 150K, labor reduced 70%'},
+      {title:'Cold Chain Smart Sorting', desc:'Low-temp AGV + vision sorting, stable at -25\u00b0C, 3x efficiency'}
+    ]},
+    'scenario_case_elderly_care': { zh: [], en: [
+      {title:'Smart Elderly Care Community Demo', desc:'Deployed 50 companion+nursing robots, 3 communities, 95% satisfaction, 30% nursing labor saved'},
+      {title:'Rehab Center Robot-Assisted Training', desc:'Force-controlled rehab robot replacing manual assistance, 2x training efficiency, 20% shorter recovery'}
+    ]},
+    'scenario_case_medical_rehab': { zh: [], en: [
+      {title:'Laparoscopic Surgical Robot Clinical Use', desc:'2000+ surgeries completed, avg time reduced 25%, recovery time reduced 40%'},
+      {title:'Spinal Cord Injury Rehab Exoskeleton', desc:'Helping paraplegic patients stand & walk again, 78% effectiveness in 6-month rehab'}
+    ]},
+    'scenario_case_education_training': { zh: [], en: [
+      {title:'"100 Cities 10K Schools" Robot Education', desc:'Covering 500+ schools, 100K+ students trained, RoboCup teams up 300%'},
+      {title:'University Embodied AI Lab Setup', desc:'Complete teaching kit + simulation platform, undergrad to grad full-chain training'}
+    ]},
+    // Scenario: cultural_tourism
+    'scenario_desc_cultural_tourism': { zh: '', en: 'Embodied AI empowers cultural tourism and commercial entertainment, creating immersive experiences, smart guided tours, interactive performances, and automated theme park operations...' },
+    'scenario_tech_cultural_tourism': { zh: [], en: ['Multimodal Interaction & Affective Computing', 'Autonomous Navigation & Crowd Management', 'AR/VR/MR Immersive Technology', 'Voice Synthesis & Real-time Translation', 'Dynamic Motion Capture', 'Swarm Intelligence Scheduling'] },
+    'scenario_equip_cultural_tourism': { zh: [], en: [
+      {name:'Tourism Guide Robot', desc:'Multilingual narration, autonomous cruising, tourist Q&A interaction'},
+      {name:'Performance Robot', desc:'Human-like dance/instrument playing, multi-robot coordinated stage performance'},
+      {name:'Immersive Interactive Installation', desc:'Body-sensing interaction + AR projection, immersive themed experience space'},
+      {name:'Park Patrol Robot', desc:'Autonomous patrol, equipment inspection, crowd density monitoring & alert'},
+      {name:'Commercial Service Robot', desc:'Food delivery, product guidance, ticket verification integrated service'}
+    ]},
+    'scenario_case_cultural_tourism': { zh: [], en: [
+      {title:'Theme Park Smart Guide & Performance Project', desc:'Deployed 30 guide robots + 10 performance robots, visitor satisfaction up 40%, repeat visit rate up 25%'},
+      {title:'SE Asia Resort Smart Cultural Tourism Upgrade', desc:'Multilingual guide + immersive installations, covering 5 scenic spots, 92% foreign tourist satisfaction'}
+    ]}
+  };
+
+  /* Translation helper for dynamic content */
+  function t(key) {
+    if (I18N[key] && I18N[key][currentLang] !== undefined && I18N[key][currentLang] !== '') {
+      return I18N[key][currentLang];
+    }
+    if (I18N[key] && I18N[key]['zh'] !== undefined && I18N[key]['zh'] !== '') {
+      return I18N[key]['zh'];
+    }
+    return key;
+  }
+
+  function applyLanguage(lang) {
+    currentLang = lang;
+    localStorage.setItem('sd_lang', lang);
+    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+    document.title = t('site_title');
+    // Update data-i18n elements
+    var els = document.querySelectorAll('[data-i18n]');
+    for (var i = 0; i < els.length; i++) {
+      var key = els[i].getAttribute('data-i18n');
+      if (I18N[key] && I18N[key][lang] !== undefined && I18N[key][lang] !== '') {
+        els[i].textContent = I18N[key][lang];
+      } else if (I18N[key] && I18N[key]['zh'] !== undefined && I18N[key]['zh'] !== '') {
+        els[i].textContent = I18N[key]['zh'];
+      }
+    }
+    // Update data-i18n-placeholder elements
+    var phEls = document.querySelectorAll('[data-i18n-placeholder]');
+    for (var j = 0; j < phEls.length; j++) {
+      var pkey = phEls[j].getAttribute('data-i18n-placeholder');
+      if (I18N[pkey] && I18N[pkey][lang] !== undefined && I18N[pkey][lang] !== '') {
+        phEls[j].setAttribute('placeholder', I18N[pkey][lang]);
+      }
+    }
+    // Update language toggle button text
+    var toggleBtn = document.getElementById('langToggle');
+    if (toggleBtn) toggleBtn.textContent = lang === 'zh' ? 'EN' : '中文';
+    // Re-render scenario cards
+    if (SCENARIOS) renderScenarioCards();
+    // Re-render top companies if visible
+    if (TOP_DATA) renderTopCompanies();
+    // Re-render featured products
+    if (TOP_DATA) renderFeaturedProducts();
+
+    // Update hot tags: switch text and data-q based on language
+    var allTags = document.querySelectorAll('.hot-tag');
+    for (var ti = 0; ti < allTags.length; ti++) {
+      var tag = allTags[ti];
+      if (lang === 'en') {
+        var enText = tag.getAttribute('data-tagen');
+        if (enText) tag.textContent = enText;
+        var enQ = tag.getAttribute('data-qen');
+        if (enQ) tag.setAttribute('data-q', enQ);
+        var enFq = tag.getAttribute('data-fqen');
+        if (enFq) { tag.setAttribute('data-fq', enFq); tag.setAttribute('data-q', enFq); }
+      } else {
+        // Supplier tags (have data-qen): restore Chinese display + query
+        if (tag.hasAttribute('data-qen')) {
+          var cnText = tag.getAttribute('data-tagzh');
+          if (cnText) { tag.textContent = cnText; tag.setAttribute('data-q', cnText); }
+        }
+        // Buyer tags (have data-qzh): show Chinese text, keep data-q as English (matching engine needs EN)
+        else if (tag.hasAttribute('data-qzh')) {
+          var cnText = tag.getAttribute('data-qzh');
+          if (cnText) tag.textContent = cnText;
+          // data-q stays as original English for buyer search
+        }
+        // Free match tags (have data-fqen): restore Chinese display + query
+        if (tag.hasAttribute('data-fqen')) {
+          var cnText = tag.getAttribute('data-tagzh');
+          if (cnText) tag.textContent = cnText;
+          var origFq = tag.getAttribute('data-fqzh');
+          if (origFq) tag.setAttribute('data-fq', origFq);
+        }
+      }
+    }
+  }
+
+  window.toggleLanguage = function() {
+    applyLanguage(currentLang === 'zh' ? 'en' : 'zh');
+  };
   /* ========== State ========== */
   var INDO_DATA = [], CN_DATA = [], TOP_DATA = null, SCENARIOS = null;
   var dataReady = false;
@@ -481,7 +1059,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 
   /* ========== Render Functions ========== */
   function renderCnCards(results, max) {
-    if (results.length === 0) return '<div class="empty-state"><div class="icon">🔍</div><div class="msg">暂无匹配</div></div>';
+    if (results.length === 0) return '<div class="empty-state"><div class="icon">🔍</div><div class="msg">' + t('no_match') + '</div></div>';
     var show = results.slice(0, max || 2);
     var html = '';
     for (var i = 0; i < show.length; i++) {
@@ -489,23 +1067,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       html += '<div class="result-card">';
       html += '<div class="cname">' + escapeHtml(c.n) + '</div>';
       html += '<div class="cloc">📍 ' + escapeHtml(c.p) + ' ' + escapeHtml(c.c) + '</div>';
-      html += '<div class="irow"><span class="ilbl">置信度</span><span class="ival">' + escapeHtml(c.cf) + '</span></div>';
-      if (c.l) html += '<div class="irow"><span class="ilbl">分类</span><span class="ival">' + escapeHtml(c.l) + '</span></div>';
-      if (c.r) html += '<div class="irow"><span class="ilbl">资本</span><span class="ival">' + escapeHtml(c.r) + '</span></div>';
+      html += '<div class="irow"><span class="ilbl">' + t('confidence') + '</span><span class="ival">' + escapeHtml(c.cf) + '</span></div>';
+      if (c.l) html += '<div class="irow"><span class="ilbl">' + t('category') + '</span><span class="ival">' + escapeHtml(c.l) + '</span></div>';
+      if (c.r) html += '<div class="irow"><span class="ilbl">' + t('capital') + '</span><span class="ival">' + escapeHtml(c.r) + '</span></div>';
       if (c.pi && c.pi !== '待核实（见官网）' && c.pi !== 'null') {
-        html += '<div class="irow"><span class="ilbl">产品</span><span class="ival">' + escapeHtml(c.pi.substring(0,80)) + '</span></div>';
+        html += '<div class="irow"><span class="ilbl">' + t('products') + '</span><span class="ival">' + escapeHtml(c.pi.substring(0,80)) + '</span></div>';
       }
-      html += '<span class="mscore">匹配度: ' + c.score + ' 命中</span>';
+      html += '<span class="mscore">' + t('match_score') + ': ' + c.score + ' ' + t('hits') + '</span>';
       html += '</div>';
     }
     if (results.length > (max || 2)) {
-      html += '<div style="text-align:center;color:#666;font-size:11px;padding:6px 0">还有 ' + (results.length - (max||2)) + ' 家待解锁…</div>';
+      html += '<div style="text-align:center;color:#666;font-size:11px;padding:6px 0">' + (results.length - (max||2)) + ' ' + t('more_unlock') + '</div>';
     }
     return html;
   }
 
   function renderIndoCards(results, max) {
-    if (results.length === 0) return '<div class="empty-state"><div class="icon">🔍</div><div class="msg">No matches found</div></div>';
+    if (results.length === 0) return '<div class="empty-state"><div class="icon">🔍</div><div class="msg">' + t('no_match') + '</div></div>';
     var show = results.slice(0, max || 2);
     var html = '';
     for (var i = 0; i < show.length; i++) {
@@ -513,15 +1091,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       html += '<div class="result-card">';
       html += '<div class="cname">' + escapeHtml(c.n) + '</div>';
       html += '<div class="cloc">📍 ' + escapeHtml(c.c) + '</div>';
-      if (c.s) html += '<div class="irow"><span class="ilbl">规模</span><span class="ival">' + escapeHtml(c.s) + '</span></div>';
-      if (c.r) html += '<div class="irow"><span class="ilbl">营收</span><span class="ival">' + escapeHtml(c.r) + '</span></div>';
-      if (c.i) html += '<div class="irow"><span class="ilbl">行业</span><span class="ival">' + escapeHtml(c.i) + '</span></div>';
-      if (c.d) html += '<div class="irow"><span class="ilbl">业务</span><span class="ival">' + escapeHtml(c.d.substring(0,100)) + '</span></div>';
-      html += '<span class="mscore">Match: ' + c.score + ' hits</span>';
+      if (c.s) html += '<div class="irow"><span class="ilbl">' + t('scale') + '</span><span class="ival">' + escapeHtml(c.s) + '</span></div>';
+      if (c.r) html += '<div class="irow"><span class="ilbl">' + t('revenue') + '</span><span class="ival">' + escapeHtml(c.r) + '</span></div>';
+      if (c.i) html += '<div class="irow"><span class="ilbl">' + t('industry') + '</span><span class="ival">' + escapeHtml(c.i) + '</span></div>';
+      if (c.d) html += '<div class="irow"><span class="ilbl">' + t('business') + '</span><span class="ival">' + escapeHtml(c.d.substring(0,100)) + '</span></div>';
+      html += '<span class="mscore">' + t('match_score') + ': ' + c.score + ' ' + t('hits') + '</span>';
       html += '</div>';
     }
     if (results.length > (max || 2)) {
-      html += '<div style="text-align:center;color:#666;font-size:11px;padding:6px 0">' + (results.length - (max||2)) + ' more to unlock…</div>';
+      html += '<div style="text-align:center;color:#666;font-size:11px;padding:6px 0">' + (results.length - (max||2)) + ' ' + t('more_unlock') + '</div>';
     }
     return html;
   }
@@ -536,22 +1114,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     for (var j = 0; j < contents.length; j++) {
       contents[j].className = contents[j].id === 'tab-' + tabId ? 'tab-content active' : 'tab-content';
     }
-    // Lazy load data on tab switch
-    if (tabId === 'buyer' && !indoLoaded) {
-      loadIndoData();
+    // Ensure data is loaded when switching to search tabs
+    if (tabId === 'buyer' || tabId === 'free') {
+      if (!indoLoaded && !indoLoading) loadIndoData();
     }
-    if ((tabId === 'free') && (!cnLoaded || !indoLoaded)) {
-      loadCnData();
-      loadIndoData();
+    if (tabId === 'supplier' || tabId === 'free') {
+      if (!cnLoaded && !cnLoading) loadCnData();
     }
   }
 
   /* ========== Supplier Search (Tab 1) ========== */
   function doSupplierSearch(q) {
-    if (!q) { alert('请输入产品或需求关键词'); return; }
+    if (!q) { alert(t('alert_enter_kw')); return; }
     if (!cnLoaded) {
-      alert('国内供应商数据正在加载中，请稍候再试…');
-      loadCnData();
+      if (cnLoading) {
+        alert(t('alert_cn_loading'));
+      } else {
+        loadCnData();
+        alert(t('alert_cn_init'));
+      }
       return;
     }
     document.getElementById('supplierResults').innerHTML = '';
@@ -568,18 +1149,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       if (results.length > 0) {
         var hc = 0;
         for (var k = 0; k < results.length; k++) { if (results[k].cf === '高' || results[k].cf === '中') hc++; }
-        html += '<div class="result-header"><span class="result-count">找到 ' + results.length + ' 家供应商</span><span class="result-tag">' + hc + ' 家中高置信度</span></div>';
+        html += '<div class="result-header"><span class="result-count">' + t('found_suppliers') + ' ' + results.length + ' ' + t('suppliers_unit') + '</span><span class="result-tag">' + hc + ' ' + t('high_conf') + '</span></div>';
         html += renderCnCards(results, 2);
       } else {
-        html = '<div class="empty-state"><div class="icon">🔍</div><div class="msg">暂未找到匹配供应商<br/>请尝试其他关键词</div></div>';
+        html = '<div class="empty-state"><div class="icon">🔍</div><div class="msg">' + t('no_supplier_match') + '<br/>' + t('try_other_kw') + '</div></div>';
       }
       document.getElementById('supplierResults').innerHTML = html;
+      window._lastSupplierResults = results;
 
       if (results.length > 0) {
         document.getElementById('supplierCta').innerHTML =
-          '<div class="cta-title">💡 获取完整供应商名录 + 一体化方案</div>' +
-          '<div class="cta-desc">解锁 ' + results.length + ' 家供应商完整产品目录、工厂报价<br/>我们提供定制一体化解决方案，降低30%成本</div>' +
-          '<button class="cta-btn" id="sl_cta_btn">留下联系方式，24h内获取方案</button>';
+          '<div class="cta-title">' + t('cta_supplier_title') + '</div>' +
+          '<div class="cta-desc">' + t('cta_supplier_desc_1') + '<br/>' + t('cta_supplier_desc_2') + '<br/>' + t('cta_supplier_desc_3') + '</div>' +
+          '<button class="cta-btn" id="sl_cta_btn">' + t('cta_supplier_btn') + '</button>';
         document.getElementById('supplierCta').style.display = 'block';
         var ctaBtn = document.getElementById('sl_cta_btn');
         if (ctaBtn) ctaBtn.addEventListener('click', function() {
@@ -592,12 +1174,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 
   /* ========== Buyer Search (Tab 2) ========== */
   function doBuyerSearch(q) {
-    if (!q) { alert('Please enter keywords'); return; }
+    if (!q) { alert(t('alert_en_kw')); return; }
     if (!indoLoaded) {
       if (indoLoading) {
-        alert('印尼企业数据正在加载中，请稍候再试…');
+        alert(t('alert_id_loading'));
       } else {
-        alert('印尼企业数据正在加载，请稍候再点击匹配…');
+        alert(t('alert_id_init'));
         loadIndoData();
       }
       return;
@@ -613,18 +1195,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 
       var html = '';
       if (results.length > 0) {
-        html += '<div class="result-header"><span class="result-count">Found ' + results.length + ' companies</span><span class="result-tag">Real-time match</span></div>';
+        html += '<div class="result-header"><span class="result-count">' + t('found_companies') + ' ' + results.length + ' ' + t('companies_unit') + '</span><span class="result-tag">' + t('realtime_match') + '</span></div>';
         html += renderIndoCards(results, 2);
       } else {
-        html = '<div class="empty-state"><div class="icon">🔍</div><div class="msg">No matches found<br/>Please try different keywords</div></div>';
+        html = '<div class="empty-state"><div class="icon">🔍</div><div class="msg">' + t('no_buyer_match') + '<br/>' + t('try_other_kw') + '</div></div>';
       }
       document.getElementById('buyerResults').innerHTML = html;
+      window._lastBuyerResults = results;
 
       if (results.length > 0) {
         document.getElementById('buyerCta').innerHTML =
-          '<div class="cta-title">⚠️ Unlock all ' + results.length + ' buyers</div>' +
-          '<div class="cta-desc">Get full contact info, purchase history & HS tariff analysis</div>' +
-          '<button class="cta-btn" id="buyer_cta_btn">Get Report [¥3,000]</button>';
+          '<div class="cta-title">' + t('cta_supplier_title') + '</div>' +
+          '<div class="cta-desc">' + t('cta_buyer_desc') + '<br/>' + t('cta_supplier_desc_2') + '<br/>' + t('cta_supplier_desc_3') + '</div>' +
+          '<button class="cta-btn" id="buyer_cta_btn">' + t('cta_buyer_btn') + '</button>';
         document.getElementById('buyerCta').style.display = 'block';
       }
     }, 500);
@@ -632,9 +1215,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 
   /* ========== Free Match (Tab 3) ========== */
   function doFreeSearch(q) {
-    if (!q) { alert('请输入需求描述'); return; }
+    if (!q) { alert(t('alert_enter_desc')); return; }
     if (!cnLoaded && !indoLoaded) {
-      alert('数据正在加载中，请稍候再试…');
+      alert(t('alert_data_loading'));
       loadCnData();
       loadIndoData();
       return;
@@ -650,14 +1233,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       document.getElementById('freeLoading').className = 'loading';
 
       if (!cnLoaded) {
-        document.getElementById('freeCnResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">⏳ 国内数据加载中，请稍候重试…</div>';
+        document.getElementById('freeCnResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">' + t('loading_cn') + '</div>';
       } else {
         document.getElementById('freeCnResults').innerHTML = renderCnCards(cnResults, 2);
+        window._lastFreeCnResults = cnResults;
       }
       if (!indoLoaded) {
-        document.getElementById('freeIndoResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">⏳ 印尼数据加载中，请稍候重试…</div>';
+        document.getElementById('freeIndoResults').innerHTML = '<div style="color:#888;font-size:11px;padding:8px">' + t('loading_id') + '</div>';
       } else {
         document.getElementById('freeIndoResults').innerHTML = renderIndoCards(indoResults, 2);
+        window._lastFreeIndoResults = indoResults;
+      }
+
+      // Show CTA if we have any results
+      if (cnResults.length > 0 || indoResults.length > 0) {
+        document.getElementById('freeCta').innerHTML =
+          '<div class="cta-title">' + t('cta_free_title') + '</div>' +
+          '<div class="cta-desc">' + t('cta_free_desc') + '<br/>' + t('cta_supplier_desc_2') + '<br/>' + t('cta_supplier_desc_3') + '</div>' +
+          '<button class="cta-btn" id="free_cta_btn">' + t('cta_free_btn') + '</button>';
+        document.getElementById('freeCta').style.display = 'block';
       }
     }, 400);
   }
@@ -671,8 +1265,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       var s = scenarios[i];
       html += '<div class="scenario-card" data-sid="' + s.id + '">';
       html += '<div class="sc-icon">' + s.icon + '</div>';
-      html += '<div class="sc-name">' + escapeHtml(s.name) + '</div>';
-      html += '<div class="sc-name-en">' + escapeHtml(s.name_en) + '</div>';
+      var isEn = currentLang === 'en';
+      html += '<div class="sc-name">' + escapeHtml(isEn ? s.name_en : s.name) + '</div>';
+      html += '<div class="sc-name-en">' + escapeHtml(isEn ? s.name : s.name_en) + '</div>';
       html += '</div>';
     }
     document.getElementById('scenarioScroll').innerHTML = html;
@@ -698,42 +1293,49 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     }
     if (!scenario) return;
 
+    var isEn = currentLang === 'en';
+    var sName = isEn ? scenario.name_en : scenario.name;
+    var sDesc = isEn && I18N['scenario_desc_' + sid] && I18N['scenario_desc_' + sid].en ? I18N['scenario_desc_' + sid].en : scenario.description;
+
     var html = '';
-    html += '<div class="sd-title">' + scenario.icon + ' ' + escapeHtml(scenario.name) + ' <span style="font-size:12px;color:#888;font-weight:400">' + escapeHtml(scenario.name_en) + '</span></div>';
-    html += '<div class="sd-desc">' + escapeHtml(scenario.description) + '</div>';
+    html += '<div class="sd-title">' + scenario.icon + ' ' + escapeHtml(sName) + '</div>';
+    html += '<div class="sd-desc">' + escapeHtml(sDesc) + '</div>';
 
     // Techs
-    html += '<div class="sd-section"><div class="sd-section-title">🔧 适用技术</div><div class="tech-tags">';
-    for (var t = 0; t < scenario.techs.length; t++) {
-      html += '<span class="tech-tag">' + escapeHtml(scenario.techs[t]) + '</span>';
+    var techs = (isEn && I18N['scenario_tech_' + sid] && I18N['scenario_tech_' + sid].en && I18N['scenario_tech_' + sid].en.length) ? I18N['scenario_tech_' + sid].en : scenario.techs;
+    html += '<div class="sd-section"><div class="sd-section-title">' + t('sd_tech') + '</div><div class="tech-tags">';
+    for (var ti = 0; ti < techs.length; ti++) {
+      html += '<span class="tech-tag">' + escapeHtml(techs[ti]) + '</span>';
     }
     html += '</div></div>';
 
     // Equipments
-    html += '<div class="sd-section"><div class="sd-section-title">🤖 推荐设备</div><div class="equip-list">';
-    for (var e = 0; e < scenario.equipments.length; e++) {
-      var eq = scenario.equipments[e];
+    var equips = (isEn && I18N['scenario_equip_' + sid] && I18N['scenario_equip_' + sid].en && I18N['scenario_equip_' + sid].en.length) ? I18N['scenario_equip_' + sid].en : scenario.equipments;
+    html += '<div class="sd-section"><div class="sd-section-title">' + t('sd_equip') + '</div><div class="equip-list">';
+    for (var ei = 0; ei < equips.length; ei++) {
+      var eq = equips[ei];
       html += '<div class="equip-item"><div class="eq-name">' + escapeHtml(eq.name) + '</div><div class="eq-desc">' + escapeHtml(eq.desc) + '</div></div>';
     }
     html += '</div></div>';
 
     // Companies
-    html += '<div class="sd-section"><div class="sd-section-title">🏢 推荐企业（点击搜索匹配）</div><div class="company-chips">';
-    for (var c = 0; c < scenario.companies.length; c++) {
-      html += '<span class="company-chip" data-cname="' + escapeHtml(scenario.companies[c]) + '">' + escapeHtml(scenario.companies[c]) + '</span>';
+    html += '<div class="sd-section"><div class="sd-section-title">' + t('sd_companies') + '</div><div class="company-chips">';
+    for (var ci = 0; ci < scenario.companies.length; ci++) {
+      html += '<span class="company-chip" data-cname="' + escapeHtml(scenario.companies[ci]) + '">' + escapeHtml(scenario.companies[ci]) + '</span>';
     }
     html += '</div></div>';
 
     // Cases
-    html += '<div class="sd-section"><div class="sd-section-title">📋 案例预设</div>';
-    for (var ca = 0; ca < scenario.cases.length; ca++) {
-      var cs = scenario.cases[ca];
+    var cases = (isEn && I18N['scenario_case_' + sid] && I18N['scenario_case_' + sid].en && I18N['scenario_case_' + sid].en.length) ? I18N['scenario_case_' + sid].en : scenario.cases;
+    html += '<div class="sd-section"><div class="sd-section-title">' + t('sd_cases') + '</div>';
+    for (var cai = 0; cai < cases.length; cai++) {
+      var cs = cases[cai];
       html += '<div class="case-card"><div class="case-title">' + escapeHtml(cs.title) + '</div><div class="case-desc">' + escapeHtml(cs.desc) + '</div></div>';
     }
     html += '</div>';
 
     // Action button
-    html += '<button class="scenario-action-btn" data-scenario-q="' + escapeHtml(scenario.name + ' ' + scenario.techs.slice(0,3).join(' ')) + '">🔍 查找该场景匹配供应商</button>';
+    html += '<button class="scenario-action-btn" data-scenario-q="' + escapeHtml(scenario.name + ' ' + scenario.techs.slice(0,3).join(' ')) + '">' + t('sd_search_btn') + '</button>';
 
     var detail = document.getElementById('scenarioDetail');
     detail.innerHTML = html;
@@ -769,7 +1371,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     // Cat tabs
     var tabHtml = '';
     for (var i = 0; i < cats.length; i++) {
-      tabHtml += '<div class="top-cat-tab' + (i===0?' active':'') + '" data-cat="' + cats[i].id + '">' + cats[i].icon + ' ' + escapeHtml(cats[i].name) + '</div>';
+      var catI18nMap = { 'cat_body': 'top_cat_body', 'cat_perception': 'top_cat_perception', 'cat_actuation': 'top_cat_actuation' };
+      var catName = (catI18nMap[cats[i].id] && I18N[catI18nMap[cats[i].id]]) ? I18N[catI18nMap[cats[i].id]][currentLang] : cats[i].name;
+      tabHtml += '<div class="top-cat-tab' + (i===0?' active':'') + '" data-cat="' + cats[i].id + '">' + cats[i].icon + ' ' + escapeHtml(catName) + '</div>';
     }
     document.getElementById('topCatTabs').innerHTML = tabHtml;
 
@@ -820,8 +1424,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     document.getElementById('featuredScroll').innerHTML = html;
   }
 
-  /* ========== Data Loading (Lazy + XHR with timeout & retry) ========== */
+  /* ========== Data Loading (XHR with timeout & retry) ========== */
   var cnLoaded = false, indoLoaded = false, cnLoading = false, indoLoading = false;
+
+  window._retryCn = function() { cnLoaded=false; loadCnData(); };
+  window._retryIndo = function() { indoLoaded=false; loadIndoData(); };
 
   function xhrLoad(url, timeout, maxRetry, onSuccess, onFail) {
     var attempt = 0;
@@ -870,7 +1477,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       if (callback) callback();
     }, function(e) {
       cnLoading = false;
-      document.getElementById('statCn').textContent = '⚠';
+      document.getElementById('statCn').innerHTML = '<span style="cursor:pointer;text-decoration:underline" onclick="window._retryCn()">' + t('retry') + '</span>';
       console.warn('cn_data load failed:', e);
     });
   }
@@ -884,8 +1491,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     }
     indoLoading = true;
     document.getElementById('statIndo').textContent = '⏳';
-    xhrLoad('indo_data.json', 45000, 3, function(d) {
-      INDO_DATA = d;
+    xhrLoad('indo_data.json', 45000, 3, function(raw) {
+      // Expand compressed format: resolve index references
+      var cities = raw.cities || [];
+      var scales = raw.scales || [];
+      var revenues = raw.revenues || [];
+      var employees = raw.employees || [];
+      var industries = raw.industries || [];
+      var items = raw.data || raw;
+      INDO_DATA = [];
+      for (var i = 0; i < items.length; i++) {
+        var r = items[i];
+        var expanded = {
+          n: r.n || '',
+          c: (typeof r.c === 'number' && cities[r.c]) ? cities[r.c] : (r.c || ''),
+          s: (typeof r.s === 'number' && scales[r.s]) ? scales[r.s] : (r.s || ''),
+          r: (typeof r.r === 'number' && revenues[r.r]) ? revenues[r.r] : (r.r || ''),
+          i: (typeof r.i === 'number' && industries[r.i]) ? industries[r.i] : (r.i || ''),
+          d: r.d || '',
+          e: (typeof r.e === 'number' && employees[r.e]) ? employees[r.e] : (r.e || ''),
+          // Compute search text from available fields
+          t: ((r.n||'') + ' ' + ((typeof r.i === 'number' && industries[r.i]) ? industries[r.i] : (r.i||'')) + ' ' + (r.d||'')).toLowerCase()
+        };
+        INDO_DATA.push(expanded);
+      }
       indoLoaded = true;
       indoLoading = false;
       dataReady = true;
@@ -893,13 +1522,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       if (callback) callback();
     }, function(e) {
       indoLoading = false;
-      document.getElementById('statIndo').textContent = '⚠';
+      document.getElementById('statIndo').innerHTML = '<span style="cursor:pointer;text-decoration:underline" onclick="window._retryIndo()">' + t('retry') + '</span>';
       console.warn('indo_data load failed:', e);
     });
   }
 
   function loadData() {
-    // Eagerly load small files
+    // Eagerly load small files first
     xhrLoad('top_companies.json', 15000, 2, function(d) {
       TOP_DATA = d;
       var topCount = 0;
@@ -919,19 +1548,220 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
     }, function(e) {
       console.warn('scenarios load failed:', e);
     });
-    // Preload cn_data in background (small file ~225KB)
+    // Load cn_data (225KB, should be fast)
     loadCnData();
-    // indo_data lazy - only when user needs it
+    // Load indo_data (7.2MB, may be slow on mobile)
+    loadIndoData();
   }
 
-  /* ========== Lead Form Submit ========== */
-  function submitLead() {
-    var co = document.getElementById('sl_co').value.trim();
-    var na = document.getElementById('sl_na').value.trim();
-    var ph = document.getElementById('sl_ph').value.trim();
-    if (!co || !na || !ph) { alert('请填写公司名称、姓名和联系方式'); return; }
-    alert('✅ 提交成功！\n\n我们的出海专家将在24小时内与您联系。\n\n公司：' + co);
-    document.getElementById('supplierLead').className = 'lead-form';
+  /* ========== Lead Form Submit (via FormSubmit.co) ========== */
+  // ⚠️ 将下面的邮箱改为你的实际接收邮箱
+  var LEAD_EMAIL = 'contact@example.com';
+
+  function submitLead(tabType) {
+    // Get form fields based on tab
+    var prefix = tabType === 'buyer' ? 'bl_' : tabType === 'free' ? 'fl_' : 'sl_';
+    var formId = tabType === 'buyer' ? 'buyerLead' : tabType === 'free' ? 'freeLead' : 'supplierLead';
+    
+    var co = document.getElementById(prefix + 'co').value.trim();
+    var na = document.getElementById(prefix + 'na').value.trim();
+    var ph = document.getElementById(prefix + 'ph').value.trim();
+    var em = document.getElementById(prefix + 'em').value.trim();
+    var wx = document.getElementById(prefix + 'wx').value.trim();
+    var wa = document.getElementById(prefix + 'wa').value.trim();
+    var scenario = document.getElementById(prefix + 'scenario') ? document.getElementById(prefix + 'scenario').value : '';
+    var budget = document.getElementById(prefix + 'budget') ? document.getElementById(prefix + 'budget').value : '';
+    var desc = document.getElementById(prefix + 'desc') ? document.getElementById(prefix + 'desc').value.trim() : '';
+    var pkg = document.getElementById(prefix + 'package') ? document.getElementById(prefix + 'package').value : '';
+    
+    if (!co || !na || !ph || !em) { alert(t('alert_fill_required')); return; }
+    if (!wx && !wa) { alert(t('alert_wechat_or_whatsapp')); return; }
+    if (!scenario) { alert(currentLang === 'en' ? 'Please select a scenario' : '请选择应用场景'); return; }
+    if (!pkg) { alert(currentLang === 'en' ? 'Please select a package' : '请选择合作套餐'); return; }
+
+    var btn = document.getElementById(prefix + 'submit');
+    btn.disabled = true;
+    btn.textContent = t('lead_submit_sending');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://formsubmit.co/ajax/' + LEAD_EMAIL, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.timeout = 15000;
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        btn.textContent = t('lead_submit_done');
+        var contactInfo = '手机: ' + ph + ' / 邮箱: ' + em + (wx ? ' / 微信: ' + wx : '') + (wa ? ' / WhatsApp: ' + wa : '');
+        showSuccess(t('success_msg') + '\n\n' + t('success_company') + co + '\n' + t('success_name') + na + '\n' + t('success_contact') + contactInfo);
+        // Clear form fields
+        document.getElementById(prefix + 'co').value = '';
+        document.getElementById(prefix + 'na').value = '';
+        document.getElementById(prefix + 'ph').value = '';
+        document.getElementById(prefix + 'em').value = '';
+        document.getElementById(prefix + 'wx').value = '';
+        document.getElementById(prefix + 'wa').value = '';
+        if (document.getElementById(prefix + 'scenario')) document.getElementById(prefix + 'scenario').value = '';
+        if (document.getElementById(prefix + 'budget')) document.getElementById(prefix + 'budget').value = '';
+        if (document.getElementById(prefix + 'desc')) document.getElementById(prefix + 'desc').value = '';
+        if (document.getElementById(prefix + 'package')) document.getElementById(prefix + 'package').value = '';
+        // Unlock remaining masked info after submission
+        unlockResults(tabType);
+        setTimeout(function() { document.getElementById(formId).className = 'lead-form'; }, 3000);
+      } else {
+        btn.disabled = false;
+        btn.textContent = t('lead_submit');
+        alert(t('alert_submit_fail'));
+      }
+    };
+    xhr.onerror = function() {
+      btn.disabled = false;
+      btn.textContent = t('lead_submit');
+      alert(t('alert_network_error'));
+    };
+    xhr.ontimeout = function() {
+      btn.disabled = false;
+      btn.textContent = t('lead_submit');
+      alert(t('alert_timeout'));
+    };
+
+    var pkgLabels = {'basic': '基础套餐(¥3,000)', 'accompanied': '陪跑套餐(¥3,000+提成)', 'integration': '集成执行(合同另议)'};
+    var scenarioLabels = {'smart_factory': '智能制造工厂', 'warehouse_logistics': '仓储物流', 'elderly_care': '养老护理', 'medical_rehab': '医疗康复', 'education_training': '教育培训', 'cultural_tourism': '文旅娱乐', 'other': '其他'};
+    var tabLabels = {'supplier': '找供应商', 'buyer': '找买家', 'free': '自由匹配'};
+    var payload = {
+      name: na,
+      company: co,
+      phone: ph,
+      email: em,
+      wechat: wx,
+      whatsapp: wa,
+      scenario: (scenarioLabels[scenario] || scenario),
+      budget: budget,
+      package: (pkgLabels[pkg] || pkg),
+      requirements: desc,
+      source: tabLabels[tabType] || tabType,
+      _subject: '[匹配] 新线索 - ' + co + ' - ' + na + ' (' + (tabLabels[tabType]||tabType) + ')',
+      _captcha: 'false',
+      _template: 'table'
+    };
+    xhr.send(JSON.stringify(payload));
+  }
+
+  function submitScenarioLead() {
+    var co = document.getElementById('scl_co').value.trim();
+    var na = document.getElementById('scl_na').value.trim();
+    var ph = document.getElementById('scl_ph').value.trim();
+    var em = document.getElementById('scl_em').value.trim();
+    var wx = document.getElementById('scl_wx').value.trim();
+    var wa = document.getElementById('scl_wa').value.trim();
+    var scenario = document.getElementById('scl_scenario') ? document.getElementById('scl_scenario').value : '';
+    var budget = document.getElementById('scl_budget') ? document.getElementById('scl_budget').value : '';
+    var desc = document.getElementById('scl_desc') ? document.getElementById('scl_desc').value.trim() : '';
+    var pkg = document.getElementById('scl_package') ? document.getElementById('scl_package').value : '';
+    
+    if (!co || !na || !ph || !em) { alert(t('alert_fill_required')); return; }
+    if (!wx && !wa) { alert(t('alert_wechat_or_whatsapp')); return; }
+    if (!scenario) { alert(currentLang === 'en' ? 'Please select a scenario' : '请选择应用场景'); return; }
+    if (!pkg) { alert(currentLang === 'en' ? 'Please select a service type' : '请选择服务类型'); return; }
+
+    var btn = document.getElementById('scl_submit');
+    btn.disabled = true;
+    btn.textContent = t('lead_submit_sending');
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'https://formsubmit.co/ajax/' + LEAD_EMAIL, true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+    xhr.setRequestHeader('Accept', 'application/json');
+    xhr.timeout = 15000;
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        btn.textContent = t('lead_submit_done');
+        var contactInfo2 = '手机: ' + ph + ' / 邮箱: ' + em + (wx ? ' / 微信: ' + wx : '') + (wa ? ' / WhatsApp: ' + wa : '');
+        showSuccess(t('success_msg') + '\n\n' + t('success_company') + co + '\n' + t('success_name') + na + '\n' + t('success_contact') + contactInfo2);
+        document.getElementById('scl_co').value = '';
+        document.getElementById('scl_na').value = '';
+        document.getElementById('scl_ph').value = '';
+        document.getElementById('scl_em').value = '';
+        document.getElementById('scl_wx').value = '';
+        document.getElementById('scl_wa').value = '';
+        if (document.getElementById('scl_scenario')) document.getElementById('scl_scenario').value = '';
+        if (document.getElementById('scl_budget')) document.getElementById('scl_budget').value = '';
+        if (document.getElementById('scl_desc')) document.getElementById('scl_desc').value = '';
+        if (document.getElementById('scl_package')) document.getElementById('scl_package').value = '';
+        setTimeout(function() { document.getElementById('scenarioLead').className = 'lead-form'; }, 3000);
+      } else {
+        btn.disabled = false;
+        btn.textContent = t('lead_submit');
+        alert(t('alert_submit_fail'));
+      }
+    };
+    xhr.onerror = function() {
+      btn.disabled = false;
+      btn.textContent = t('lead_submit');
+      alert(t('alert_network_error'));
+    };
+    xhr.ontimeout = function() {
+      btn.disabled = false;
+      btn.textContent = t('lead_submit');
+      alert(t('alert_timeout'));
+    };
+
+    var scenarioLabels = {'smart_factory': '智能制造工厂', 'warehouse_logistics': '仓储物流', 'elderly_care': '养老护理', 'medical_rehab': '医疗康复', 'education_training': '教育培训', 'cultural_tourism': '文旅娱乐', 'other': '其他'};
+    var scPkgLabels = {'scenario_plan': '场景方案+预算规划(¥3,000)', 'scenario_exec': '场景测试+集成交付(合同另议)'};
+    var payload = {
+      name: na,
+      company: co,
+      phone: ph,
+      email: em,
+      wechat: wx,
+      whatsapp: wa,
+      scenario: (scenarioLabels[scenario] || scenario),
+      budget: budget,
+      package: (scPkgLabels[pkg] || pkg),
+      requirements: desc,
+      source: '场景搜索',
+      _subject: '[场景] 新场景线索 - ' + co + ' - ' + na,
+      _captcha: 'false',
+      _template: 'table'
+    };
+    xhr.send(JSON.stringify(payload));
+  }
+
+  function unlockResults(tabType) {
+    // After successful submission, show full results (remove the 2-item limit)
+    if (tabType === 'supplier' && window._lastSupplierResults) {
+      document.getElementById('supplierResults').innerHTML = renderCnCards(window._lastSupplierResults, 999);
+    } else if (tabType === 'buyer' && window._lastBuyerResults) {
+      document.getElementById('buyerResults').innerHTML = renderIndoCards(window._lastBuyerResults, 999);
+    } else if (tabType === 'free') {
+      if (window._lastFreeCnResults) document.getElementById('freeCnResults').innerHTML = renderCnCards(window._lastFreeCnResults, 999);
+      if (window._lastFreeIndoResults) document.getElementById('freeIndoResults').innerHTML = renderIndoCards(window._lastFreeIndoResults, 999);
+    }
+  }
+
+  /* ========== Payment Modal ========== */
+  function showPaymentModal() {
+    var modal = document.getElementById('paymentModal');
+    if (modal) modal.className = 'modal-overlay show';
+  }
+  function closePaymentModal() {
+    var modal = document.getElementById('paymentModal');
+    if (modal) modal.className = 'modal-overlay';
+  }
+
+  /* ========== Success Toast ========== */
+  function showSuccess(msg) {
+    var toast = document.getElementById('successToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'successToast';
+      toast.style.cssText = 'position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:16px 24px;border-radius:12px;font-size:13px;z-index:9999;box-shadow:0 8px 32px rgba(34,197,94,0.3);max-width:90vw;text-align:center;line-height:1.6;';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(function() { toast.style.display = 'none'; }, 4000);
   }
 
   /* ========== Init ========== */
@@ -989,8 +1819,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
       });
     }
 
-    // Lead submit
-    document.getElementById('sl_submit').addEventListener('click', submitLead);
+    // Initialize language
+    applyLanguage(currentLang);
+
+    // Lead submit (supplier form)
+    document.getElementById('sl_submit').addEventListener('click', function() { submitLead('supplier'); });
+    // Lead submit (buyer form)
+    document.getElementById('bl_submit').addEventListener('click', function() { submitLead('buyer'); });
+    // Lead submit (free match form)
+    document.getElementById('fl_submit').addEventListener('click', function() { submitLead('free'); });
+    // Lead submit (scenario form)
+    document.getElementById('scl_submit').addEventListener('click', function() { submitScenarioLead(); });
+
+    // Free match CTA button - show free lead form
+    document.addEventListener('click', function(e) {
+      if (e.target && e.target.id === 'free_cta_btn') {
+        var leadForm = document.getElementById('freeLead');
+        leadForm.className = 'lead-form show';
+        setTimeout(function() { leadForm.scrollIntoView({behavior:'smooth'}); }, 100);
+      }
+    });
+
+    // Buyer CTA button - show buyer lead form
+    document.addEventListener('click', function(e) {
+      if (e.target && e.target.id === 'buyer_cta_btn') {
+        document.getElementById('buyerLead').className = 'lead-form show';
+        setTimeout(function() { document.getElementById('buyerLead').scrollIntoView({behavior:'smooth'}); }, 100);
+      }
+    });
+    // Scenario service button - show scenario lead form
+    document.addEventListener('click', function(e) {
+      if (e.target && e.target.id === 'sc_svc_btn') {
+        document.getElementById('scenarioLead').className = 'lead-form show';
+        setTimeout(function() { document.getElementById('scenarioLead').scrollIntoView({behavior:'smooth'}); }, 100);
+      }
+    });
   }
 
   if (document.readyState === 'loading') {
@@ -1001,5 +1864,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hira
 
 })();
 </script>
+
+  <!-- Payment Modal (Two-tier packages) -->
+  <div id="paymentModal" class="modal-overlay">
+    <div class="modal-content" style="max-width:400px">
+      <button class="modal-close" onclick="closePaymentModal()"></button>
+      <div style="text-align:center">
+        <div style="font-size:24px;margin-bottom:8px">📋</div>
+        <h3 style="font-size:15px;font-weight:700;color:#fff;margin-bottom:14px" data-i18n="modal_title">商机匹配服务套餐</h3>
+        
+        <!-- 基本套餐 -->
+        <div style="background:rgba(102,126,234,0.08);border:1px solid rgba(102,126,234,0.3);border-radius:12px;padding:14px;margin-bottom:10px;text-align:left">
+          <div style="font-size:14px;font-weight:700;color:#667eea;margin-bottom:4px" data-i18n="modal_pkg1_title">📋 基本套餐</div>
+          <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:8px" data-i18n="modal_pkg1_price">¥3,000</div>
+          <div style="font-size:11px;color:#ccc;line-height:1.8">
+            <span data-i18n="modal_pkg1_1">✅ 供需诊断 — 分析行业、产品与目标市场匹配度</span><br/>
+            <span data-i18n="modal_pkg1_2">✅ 匹配方案 — 定制专属供应商/买家对接方案</span><br/>
+            <span data-i18n="modal_pkg1_3">✅ 完整数据库报告 — 含联系方式、采购历史、HS关税分析</span><br/>
+            <span data-i18n="modal_pkg1_4">✅ 线下沙龙参与 — 受邀参加具身智能产业对接沙龙（1次）</span>
+          </div>
+        </div>
+        
+        <!-- 陪跑套餐 -->
+        <div style="background:rgba(184,124,255,0.08);border:1px solid rgba(184,124,255,0.3);border-radius:12px;padding:14px;margin-bottom:14px;text-align:left">
+          <div style="font-size:14px;font-weight:700;color:#b87cff;margin-bottom:4px" data-i18n="modal_pkg2_title">🚀 陪跑套餐</div>
+          <div style="font-size:13px;font-weight:600;color:#fff;margin-bottom:2px" data-i18n="modal_pkg2_price">含基本套餐 ¥3,000 + 首单提成</div>
+          <div style="font-size:10px;color:#aaa;margin-bottom:8px" data-i18n="modal_pkg2_note">费用另行协商，含基本套餐全部内容，另加：</div>
+          <div style="font-size:11px;color:#ccc;line-height:1.8">
+            <span data-i18n="modal_pkg2_1">✅ 精准对接 — 对接供需双方关键决策人</span><br/>
+            <span data-i18n="modal_pkg2_2">✅ 全程陪跑跟踪服务 — 持续跟进合作进展直至落地</span>
+          </div>
+        </div>
+        
+        <p style="font-size:11px;color:#667eea;margin-bottom:14px">
+          <span data-i18n="modal_24h_notice">⏱ 提交有效信息后，平台方将在24小时内与您联系</span>
+        </p>
+        <a href="mailto:contact@example.com?subject=商机匹配方案咨询" style="display:inline-block;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;text-decoration:none;border-radius:10px;padding:10px 24px;font-size:13px;font-weight:600">
+          <span data-i18n="modal_contact_btn">📧 联系我们</span>
+        </a>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
